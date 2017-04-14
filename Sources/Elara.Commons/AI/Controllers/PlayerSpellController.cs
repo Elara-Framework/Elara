@@ -18,6 +18,9 @@ namespace Elara.AI.Controllers
 
         public bool CanUseSpellById(int p_SpellId)
         {
+            if (Owner.Game.SpellHistory.IsSpellOnCooldown(p_SpellId))
+                return false;
+
             var l_KeyBind = GetKeyBindBySpellId(p_SpellId);
 
             return l_KeyBind?.IsUsableAction == true;
