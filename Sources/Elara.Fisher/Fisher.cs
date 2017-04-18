@@ -38,11 +38,8 @@ namespace Elara.Fisher
 
         public override void OnUnload()
         {
-            if (m_Interface != null)
-            {
-                m_Interface.Dispose();
-                m_Interface = null;
-            }
+            m_Interface?.Dispose();
+            m_Interface = null;
         }
 
         public override bool IsRunning => Running;
@@ -95,34 +92,6 @@ namespace Elara.Fisher
                 }
                 Thread.Sleep(1);
             }
-        }
-    }
-
-    /* Just some testing actually */
-    public class Mage : Extensions.CombatScript
-    {
-        public Mage(Elara p_Elara)
-            : base(p_Elara) { }
-
-        public override string Name => "Mage";
-
-        public override string Author => "Elara";
-
-        public override UserControl Interface => null;
-
-        public override void OnLoad()
-        {
-            
-        }
-
-        public override void OnUnload()
-        {
-            
-        }
-
-        public override void Combat()
-        {
-            base.Combat();
         }
     }
 }

@@ -16,27 +16,52 @@ namespace Elara.AI.Controllers
             Owner = p_Owner;
         }
 
-        public bool CanUseSpellById(int p_SpellId)
+        public bool CanUseSpell(SpellInfo p_Spell, 
+            WoW.Objects.WowUnit Target = null,
+            bool CheckCooldown = true,
+            bool CheckGlobalCooldown = true,
+            bool CheckRange = true)
         {
-            if (Owner.Game.SpellHistory.IsSpellOnCooldown(p_SpellId))
+            var l_Target = Target ?? Owner.LocalPlayer?.Target;
+
+            if (CheckCooldown && p_Spell.IsOnCooldown)
                 return false;
 
-            var l_KeyBind = GetKeyBindBySpellId(p_SpellId);
+            if (CheckGlobalCooldown && Owner.GameOwner.SpellHistory.IsGlobalCooldownActive)
+                return false;
 
-            return l_KeyBind?.IsUsableAction == true;
+            if (CheckRange && l_Target != null)
+            {
+                // TODO : Detect hostile / friendly target
+                double l_TargetRange = l_Target.DistanceTo(Owner.LocalPlayer);
+                float l_MaxRange = Math.Max(p_Spell.MaxRangeFriendly, p_Spell.MaxRangeHostile);
+                float l_MinRange = Math.Min(p_Spell.MinRangeFriendly, p_Spell.MinRangeHostile);
+
+                if (l_TargetRange > l_MaxRange || l_TargetRange < l_MinRange)
+                    return false;
+            }
+
+            return GetKeyBindBySpellId(p_Spell.SpellId)?.IsUsableAction == true;
         }
 
-        public bool UseSpellById(int p_SpellId)
+        public bool UseSpell(SpellInfo p_Spell)
         {
-            var l_KeyBind = GetKeyBindBySpellId(p_SpellId);
+            var l_KeyBind = GetKeyBindBySpellId(p_Spell.SpellId);
+
+            Owner.GameOwner.Logger.WriteLine("Debug", "[PlayerSpellController] Use spell : " + p_Spell);
 
             return l_KeyBind?.Press() == true;
         }
 
         private ActionBar.ActionBarSlot GetKeyBindBySpellId(int p_SpellId)
         {
-            return Owner.Game.ActionBar.Slots.FirstOrDefault(x =>
-                x.Filled && x.Type == ActionBar.ActionBarSlot.SlotFlags.Spell && x.ActionId == p_SpellId && x.CanPress);
+            var l_OverridenSpell = Owner.GameOwner.SpellBook.GetOverridenSpell(p_SpellId);
+
+            return Owner.GameOwner.ActionBar.Slots.FirstOrDefault(x =>
+                x.Filled && 
+                x.Type == ActionBar.ActionBarSlot.SlotFlags.Spell && 
+                (x.ActionId == p_SpellId || l_OverridenSpell?.BaseSpellId == x.ActionId) && 
+                x.CanPress);
         }
     }
 }
