@@ -79,7 +79,7 @@ namespace Elara.AI.Controllers
         {
             var l_OverridenSpell = Owner.GameOwner.SpellBook.GetOverridenSpell(p_SpellId);
 
-            return Owner.GameOwner.ActionBar.Slots.FirstOrDefault(x =>
+            return Owner.GameOwner.ActionBar.GetActiveSlots().FirstOrDefault(x =>
                 x.Filled && 
                 x.Type == ActionBar.ActionBarSlot.SlotFlags.Spell && 
                 (x.ActionId == p_SpellId || l_OverridenSpell?.BaseSpellId == x.ActionId) && 

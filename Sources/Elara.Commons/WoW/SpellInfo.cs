@@ -37,7 +37,7 @@ namespace Elara.WoW
         public bool IsOnCooldown => GameOwner.SpellHistory.IsSpellOnCooldown(SpellId);
 
         public bool IsOnActionBar =>
-            GameOwner.ActionBar.Slots.Any(x => x.Type == ActionBar.ActionBarSlot.SlotFlags.Spell && x.ActionId == SpellId);
+            GameOwner.ActionBar.GetActiveSlots().Any(x => x.Type == ActionBar.ActionBarSlot.SlotFlags.Spell && x.ActionId == SpellId);
 
         public bool CheckSpellAttribute(SpellMiscRecord.SpellAttributes p_Attribute)
         {
