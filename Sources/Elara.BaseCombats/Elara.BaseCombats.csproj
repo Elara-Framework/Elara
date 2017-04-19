@@ -33,7 +33,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <RootNamespace>Elara</RootNamespace>
+    <RootNamespace>Elara.BaseCombats</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Elara">
@@ -75,6 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CombatUtils.cs" />
     <Compile Include="Mage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

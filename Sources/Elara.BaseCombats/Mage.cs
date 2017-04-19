@@ -20,6 +20,7 @@ namespace Elara.BaseCombats
         public class MageSettings
         {
             public bool UseFrozenOrb = true;
+            public bool UseBlizzard = false;
         }
 
         private SpellInfo RuneOfPower;
@@ -30,6 +31,7 @@ namespace Elara.BaseCombats
         private SpellInfo FrostBolt;
         private SpellInfo FrostBomb;
         private SpellInfo GlacialSpike;
+        private SpellInfo Blizzard;
 
         private const int AURA_FINGERS_OF_FROST         = 44544;
         private const int AURA_FROSTBOMB                = 112948;
@@ -67,6 +69,7 @@ namespace Elara.BaseCombats
             FrostBolt       = new SpellInfo(Game, 116);
             FrostBomb       = new SpellInfo(Game, 112948);
             GlacialSpike    = new SpellInfo(Game, 199786);
+            Blizzard        = new SpellInfo(Game, 190356);
         }
 
         public override void OnUnload()
@@ -135,6 +138,10 @@ namespace Elara.BaseCombats
 
             if (l_LocalPlayer != null & l_Target != null && l_Target.IsAlive)
             {
+                var l_TargetScreenPosition = new Point();
+                var l_TargetVisibleOnScreen = this.Game.WorldFrame?.ActiveCamera?.WorldToScreen(l_Target.Position, ref l_TargetScreenPosition) == true;
+                var l_HostilesAroundTarget = CombatUtils.GetAttackersAroundPosition(this.Game, l_Target.Position, p_MaxRange: 8.0f);
+
                 if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
                     RuneOfPower.ChargesAvailable > 0 &&                                 // Do we have a charge
                     l_SpellController.CanUseSpell(RuneOfPower, l_Target))               // Use SpellController generic conditions
@@ -149,6 +156,17 @@ namespace Elara.BaseCombats
                     l_SpellController.CanUseSpell(FrozenOrb, l_Target))                 // Use SpellController generic conditions
                 {
                     l_SpellController.UseSpell(FrozenOrb);
+                    return;
+                }
+
+                if (CurrentSetting.UseBlizzard &&                                       // Check user setting
+                    l_HostilesAroundTarget.Count >= 2 &&                                // Check adds around target
+                    l_TargetVisibleOnScreen &&                                          // Check that target is visible to click on
+                    l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
+                    l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_SpellController.CanUseSpell(Blizzard, l_Target))                  // Use SpellController generic conditions
+                {
+                    l_SpellController.UseSpell(Blizzard, l_Target.Position);
                     return;
                 }
 

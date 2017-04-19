@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Elara.WoW;
+using Elara.Utils;
 
 namespace Elara.AI.Controllers
 {
@@ -51,6 +54,25 @@ namespace Elara.AI.Controllers
             Owner.GameOwner.Logger.WriteLine("Debug", "[PlayerSpellController] Use spell : " + p_Spell);
 
             return l_KeyBind?.Press() == true;
+        }
+
+        public bool UseSpell(SpellInfo p_Spell, Vector3 p_Position)
+        {
+            var l_KeyBind = GetKeyBindBySpellId(p_Spell.SpellId);
+
+            Owner.GameOwner.Logger.WriteLine("Debug", "[PlayerSpellController] Use aoe spell : " + p_Spell);
+
+            Point l_ScreenPosition = new Point();
+            if (Owner.GameOwner.WorldFrame?.ActiveCamera?.WorldToScreen(p_Position, ref l_ScreenPosition) == true &&
+                l_KeyBind?.Press() == true)
+            {
+                using (var l_LockedCursor = Owner.GameOwner.ActiveMouseController.LockCursor(l_ScreenPosition))
+                {
+                    l_LockedCursor.Click(System.Windows.Forms.MouseButtons.Left);
+                }
+            }
+
+            return false;
         }
 
         private ActionBar.ActionBarSlot GetKeyBindBySpellId(int p_SpellId)
