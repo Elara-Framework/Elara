@@ -38,6 +38,7 @@ namespace Elara.BaseCombats
         private const int AURA_BRAIN_FREEZE             = 190446;
         private const int AURA_RUNE_OF_POWER            = 116014;
         private const int AURA_ICICLES                  = 205473;
+        private const int AURA_INCANTERS_FLOW           = 116267; 
 
         private UI.UserControlMage m_Interface;
         public MageSettings CurrentSetting { get; private set; } = new MageSettings();
