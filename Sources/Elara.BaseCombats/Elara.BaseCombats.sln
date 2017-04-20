@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 15.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elara.BaseCombats", "Elara.BaseCombats.csproj", "{A75DE490-F6E9-4AED-AD57-04D49C16632D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A75DE490-F6E9-4AED-AD57-04D49C16632D}.Debug|x64.ActiveCfg = Debug|x64
+		{A75DE490-F6E9-4AED-AD57-04D49C16632D}.Debug|x64.Build.0 = Debug|x64
+		{A75DE490-F6E9-4AED-AD57-04D49C16632D}.Release|x64.ActiveCfg = Release|x64
+		{A75DE490-F6E9-4AED-AD57-04D49C16632D}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$0.StandardHeader = $2
+		$0.VersionControlPolicy = $3
+	EndGlobalSection
+EndGlobal
