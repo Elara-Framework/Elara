@@ -14,4 +14,10 @@ Global
 		{A75DE490-F6E9-4AED-AD57-04D49C16632D}.Release|x64.ActiveCfg = Release|x64
 		{A75DE490-F6E9-4AED-AD57-04D49C16632D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$0.StandardHeader = $2
+		$0.VersionControlPolicy = $3
+	EndGlobalSection
 EndGlobal

@@ -21,6 +21,7 @@ namespace Elara.BaseCombats
         {
             public bool UseFrozenOrb = true;
             public bool UseBlizzard = false;
+			public bool UseCoolDowns = false;
         }
 
 		private SpellInfo RuneOfPower;
@@ -189,9 +190,10 @@ namespace Elara.BaseCombats
 
 
 
-		if (l_SpellController.CanUseSpell(Shimmer, l_Target))                 // Use SpellController generic conditions
+				if (l_LocalPlayer.CastingInfo == null &&
+				    Shimmer.ChargesAvailable > 1) 
 		{
-			l_SpellController.UseSpell(Shimmer);
+					l_SpellController.UseSpell(Shimmer);
 			return;
 		}
               
