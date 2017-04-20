@@ -36,6 +36,8 @@ namespace Elara.BaseCombats
 		private SpellInfo IcyVeins;
 		private SpellInfo MirrorImage;
 		private SpellInfo WaterJet;
+		private SpellInfo Blink;
+		private SpellInfo Shimmer;
 
 
 		private const int AURA_FINGERS_OF_FROST = 44544;
@@ -80,6 +82,8 @@ namespace Elara.BaseCombats
 			IcyVeins = new SpellInfo(Game, 12472);
 			MirrorImage = new SpellInfo(Game, 55342);
 			WaterJet = new SpellInfo(Game, 135029);
+			Blink = new SpellInfo(Game, 1953);
+			Shimmer = new SpellInfo(Game, 212653);
 
 
         }
@@ -161,26 +165,36 @@ namespace Elara.BaseCombats
                     l_SpellController.UseSpell(RuneOfPower);
                     return;
                 }
+		if (CurrentSetting.UseBlizzard &&                                       // Check user setting
+		  l_HostilesAroundTarget.Count >= 1 &&                                // Check adds around target
+		  l_TargetVisibleOnScreen &&                                          // Check that target is visible to click on
+		  l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
+		  l_LocalPlayer.CastingInfo == null &&                                // Not casting
+		  l_SpellController.CanUseSpell(Blizzard, l_Target))                  // Use SpellController generic conditions
+		{
+			l_SpellController.UseSpell(Blizzard, l_Target.Position);
+			return;
+		}
                 
-                if (CurrentSetting.UseFrozenOrb &&                                      // Check user setting
-                    l_LocalPlayer.IsFacingHeading(l_Target, 0.3f) &&                    // Check target facing
-                    l_LocalPlayer.CastingInfo == null &&                                // Not casting
-                    l_SpellController.CanUseSpell(FrozenOrb, l_Target))                 // Use SpellController generic conditions
+
+
+		if (CurrentSetting.UseFrozenOrb &&                                      // Check user setting
+                   l_LocalPlayer.IsFacingHeading(l_Target, 0.3f) &&                    // Check target facing
+                   l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                   l_SpellController.CanUseSpell(FrozenOrb, l_Target))                 // Use SpellController generic conditions
                 {
                     l_SpellController.UseSpell(FrozenOrb);
                     return;
                 }
 
-                if (CurrentSetting.UseBlizzard &&                                       // Check user setting
-                    l_HostilesAroundTarget.Count >= 2 &&                                // Check adds around target
-                    l_TargetVisibleOnScreen &&                                          // Check that target is visible to click on
-                    l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
-                    l_LocalPlayer.CastingInfo == null &&                                // Not casting
-                    l_SpellController.CanUseSpell(Blizzard, l_Target))                  // Use SpellController generic conditions
-                {
-                    l_SpellController.UseSpell(Blizzard, l_Target.Position);
-                    return;
-                }
+
+
+		if (l_SpellController.CanUseSpell(Shimmer, l_Target))                 // Use SpellController generic conditions
+		{
+			l_SpellController.UseSpell(Shimmer);
+			return;
+		}
+              
 
                 if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
                     l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
