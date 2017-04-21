@@ -21,7 +21,7 @@ namespace Elara.BaseCombats
         {
             public bool UseFrozenOrb = true;
             public bool UseBlizzard = false;
-            public bool UseCDs = false; 
+            public bool UseCDs = true; 
         }
 
         private SpellInfo RuneOfPower;
@@ -163,11 +163,35 @@ namespace Elara.BaseCombats
                     l_SpellController.UseSpell(RuneOfPower);
                     return;
                 }
-                
+                if ( l_SpellController.CanUseSpell(IcyVeins, CheckRange: false &&       // Can use Spell
+                    CurrentSetting.UseCDs))                                              // Use CDs is turned on
+                {
+                    l_SpellController.UseSpell(IcyVeins);
+                    return;
+                }
+
+                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                 l_LocalPlayer.IsMoving == false &&                                     // Not moving
+                 l_SpellController.CanUseSpell(Ebonbolt, CheckRange: true) &&           // Can use Spell
+                 CurrentSetting.UseCDs)                                                 // Use CDs is turned on
+                {
+                    l_SpellController.UseSpell(Ebonbolt);
+                    return;
+                }
+
+                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                 l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                       // Check target facing
+                  l_LocalPlayer.IsMoving == true &&
+                 l_SpellController.CanUseSpell(IceLance, l_Target))                     // Use SpellController generic conditions
+                {
+                    l_SpellController.UseSpell(IceLance);
+                    return;
+                }
                 if (CurrentSetting.UseFrozenOrb &&                                      // Check user setting
                     l_LocalPlayer.IsMoving == false &&                                  // Not moving
                     l_LocalPlayer.IsFacingHeading(l_Target, 0.3f) &&                    // Check target facing
                     l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_HostilesAroundTarget.Count > 2 &&                                 // Check adds around target
                     l_SpellController.CanUseSpell(FrozenOrb, l_Target))                 // Use SpellController generic conditions
                 {
                     l_SpellController.UseSpell(FrozenOrb);

@@ -25,6 +25,7 @@ namespace Elara.BaseCombats.UI
         {
             metroToggleUseFrozenOrb.Checked = p_Settings.UseFrozenOrb;
             metroToggleUseBlizzard.Checked = p_Settings.UseBlizzard;
+            metroToggleUseCDs.Checked = p_Settings.UseBlizzard;
         }
 
         private void metroToggleUseFrozenOrb_CheckedChanged(object sender, EventArgs e)
@@ -35,6 +36,10 @@ namespace Elara.BaseCombats.UI
         private void metroToggleUseBlizzard_CheckedChanged(object sender, EventArgs e)
         {
             m_Combat.CurrentSetting.UseBlizzard = metroToggleUseBlizzard.Checked;
+        }
+        private void metroToggleUseCDs_CheckedChanged(object sender, EventArgs e)
+        {
+            m_Combat.CurrentSetting.UseCDs = metroToggleUseCDs.Checked;
         }
     }
 }
