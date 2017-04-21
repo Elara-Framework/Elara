@@ -21,6 +21,7 @@ namespace Elara.BaseCombats
         {
             public bool UseFrozenOrb = true;
             public bool UseBlizzard = false;
+            public bool UseCDs = false; 
         }
 
         private SpellInfo RuneOfPower;
@@ -32,12 +33,18 @@ namespace Elara.BaseCombats
         private SpellInfo FrostBomb;
         private SpellInfo GlacialSpike;
         private SpellInfo Blizzard;
+        private SpellInfo Ebonbolt;
+        private SpellInfo IcyVeins;
+        private SpellInfo MirrorImage;
+        private SpellInfo WaterJet;
+        private SpellInfo Blink;
+        private SpellInfo Shimmer;
 
-        private const int AURA_FINGERS_OF_FROST         = 44544;
-        private const int AURA_FROSTBOMB                = 112948;
-        private const int AURA_BRAIN_FREEZE             = 190446;
-        private const int AURA_RUNE_OF_POWER            = 116014;
-        private const int AURA_ICICLES                  = 205473;
+        private const int AURA_FINGERS_OF_FROST = 44544;
+        private const int AURA_FROSTBOMB = 112948;
+        private const int AURA_BRAIN_FREEZE = 190446;
+        private const int AURA_RUNE_OF_POWER = 116014;
+        private const int AURA_ICICLES = 205473;
 
         private UI.UserControlMage m_Interface;
         public MageSettings CurrentSetting { get; private set; } = new MageSettings();
@@ -61,15 +68,21 @@ namespace Elara.BaseCombats
             m_Interface     = new UI.UserControlMage(this);
             LoadSettings(Elara.SettingsManager);
 
-            RuneOfPower     = new SpellInfo(Game, 116011);
-            RayOfFrost      = new SpellInfo(Game, 205021);
-            IceLance        = new SpellInfo(Game, 30455);
-            Flurry          = new SpellInfo(Game, 44614);
-            FrozenOrb       = new SpellInfo(Game, 84714);
-            FrostBolt       = new SpellInfo(Game, 116);
-            FrostBomb       = new SpellInfo(Game, 112948);
-            GlacialSpike    = new SpellInfo(Game, 199786);
-            Blizzard        = new SpellInfo(Game, 190356);
+            RuneOfPower = new SpellInfo(Game, 116011);
+            RayOfFrost = new SpellInfo(Game, 205021);
+            IceLance = new SpellInfo(Game, 30455);
+            Flurry = new SpellInfo(Game, 44614);
+            FrozenOrb = new SpellInfo(Game, 84714);
+            FrostBolt = new SpellInfo(Game, 116);
+            FrostBomb = new SpellInfo(Game, 112948);
+            GlacialSpike = new SpellInfo(Game, 199786);
+            Blizzard = new SpellInfo(Game, 190356);
+            Ebonbolt = new SpellInfo(Game, 214634);
+            IcyVeins = new SpellInfo(Game, 12472);
+            MirrorImage = new SpellInfo(Game, 55342);
+            WaterJet = new SpellInfo(Game, 135029);
+            Blink = new SpellInfo(Game, 1953);
+            Shimmer = new SpellInfo(Game, 212653);
         }
 
         public override void OnUnload()
@@ -150,11 +163,37 @@ namespace Elara.BaseCombats
                     l_SpellController.UseSpell(RuneOfPower);
                     return;
                 }
-                
+                if (CurrentSetting.UseCDs &&
+                    l_SpellController.CanUseSpell(IcyVeins, CheckRange: false        // Can use Spell
+                    ))                                            
+                {
+                    l_SpellController.UseSpell(IcyVeins);
+                    return;
+                }
+
+                if (CurrentSetting.UseCDs &&
+                    l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                 l_LocalPlayer.IsMoving == false &&                                     // Not moving
+                 l_SpellController.CanUseSpell(Ebonbolt, CheckRange: true))            // Can use Spell
+                                                        
+                {
+                    l_SpellController.UseSpell(Ebonbolt);
+                    return;
+                }
+
+                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                 l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                       // Check target facing
+                  l_LocalPlayer.IsMoving == true &&
+                 l_SpellController.CanUseSpell(IceLance, l_Target))                     // Use SpellController generic conditions
+                {
+                    l_SpellController.UseSpell(IceLance);
+                    return;
+                }
                 if (CurrentSetting.UseFrozenOrb &&                                      // Check user setting
                     l_LocalPlayer.IsMoving == false &&                                  // Not moving
                     l_LocalPlayer.IsFacingHeading(l_Target, 0.3f) &&                    // Check target facing
                     l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_HostilesAroundTarget.Count > 2 &&                                 // Check adds around target
                     l_SpellController.CanUseSpell(FrozenOrb, l_Target))                 // Use SpellController generic conditions
                 {
                     l_SpellController.UseSpell(FrozenOrb);
