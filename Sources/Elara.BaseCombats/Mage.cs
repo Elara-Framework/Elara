@@ -163,17 +163,19 @@ namespace Elara.BaseCombats
                     l_SpellController.UseSpell(RuneOfPower);
                     return;
                 }
-                if ( l_SpellController.CanUseSpell(IcyVeins, CheckRange: false &&       // Can use Spell
-                    CurrentSetting.UseCDs))                                              // Use CDs is turned on
+                if (CurrentSetting.UseCDs &&
+                    l_SpellController.CanUseSpell(IcyVeins, CheckRange: false        // Can use Spell
+                    ))                                            
                 {
                     l_SpellController.UseSpell(IcyVeins);
                     return;
                 }
 
-                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                if (CurrentSetting.UseCDs &&
+                    l_LocalPlayer.CastingInfo == null &&                                // Not casting
                  l_LocalPlayer.IsMoving == false &&                                     // Not moving
-                 l_SpellController.CanUseSpell(Ebonbolt, CheckRange: true) &&           // Can use Spell
-                 CurrentSetting.UseCDs)                                                 // Use CDs is turned on
+                 l_SpellController.CanUseSpell(Ebonbolt, CheckRange: true))            // Can use Spell
+                                                        
                 {
                     l_SpellController.UseSpell(Ebonbolt);
                     return;
