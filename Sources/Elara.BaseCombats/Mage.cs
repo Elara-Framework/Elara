@@ -21,7 +21,7 @@ namespace Elara.BaseCombats
         {
             public bool UseFrozenOrb = true;
             public bool UseBlizzard = false;
-            public bool UseCDs = true; 
+            public bool UseCDs = false; 
         }
 
         private SpellInfo RuneOfPower;
