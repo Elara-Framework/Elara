@@ -189,9 +189,8 @@ namespace Elara.BaseCombats
                 }
 
 
-
-				if (l_LocalPlayer.CastingInfo == null &&
-				    Shimmer.ChargesAvailable > 1) 
+		if (CurrentSetting.UseCoolDowns &&                                       // Check user setting
+					Shimmer.ChargesAvailable > 1) 
 		{
 					l_SpellController.UseSpell(Shimmer);
 			return;
