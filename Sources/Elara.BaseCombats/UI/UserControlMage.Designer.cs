@@ -32,15 +32,17 @@
             this.metroToggleUseFrozenOrb = new MetroFramework.Controls.MetroToggle();
             this.metroLabelUseBlizzard = new MetroFramework.Controls.MetroLabel();
             this.metroToggleUseBlizzard = new MetroFramework.Controls.MetroToggle();
+            this.metroToggleUseCDs = new MetroFramework.Controls.MetroToggle();
+            this.metroLabelUseCDs = new MetroFramework.Controls.MetroLabel();
             this.SuspendLayout();
             // 
             // metroLabelUseFrozenOrb
             // 
             this.metroLabelUseFrozenOrb.BackColor = System.Drawing.Color.Transparent;
             this.metroLabelUseFrozenOrb.ForeColor = System.Drawing.Color.Black;
-            this.metroLabelUseFrozenOrb.Location = new System.Drawing.Point(86, 20);
+            this.metroLabelUseFrozenOrb.Location = new System.Drawing.Point(86, 24);
             this.metroLabelUseFrozenOrb.Name = "metroLabelUseFrozenOrb";
-            this.metroLabelUseFrozenOrb.Size = new System.Drawing.Size(379, 20);
+            this.metroLabelUseFrozenOrb.Size = new System.Drawing.Size(151, 20);
             this.metroLabelUseFrozenOrb.TabIndex = 5;
             this.metroLabelUseFrozenOrb.Text = "Use Frozen Orb";
             this.metroLabelUseFrozenOrb.UseCustomBackColor = true;
@@ -50,7 +52,7 @@
             // 
             this.metroToggleUseFrozenOrb.BackColor = System.Drawing.Color.Transparent;
             this.metroToggleUseFrozenOrb.DisplayStatus = false;
-            this.metroToggleUseFrozenOrb.Location = new System.Drawing.Point(20, 20);
+            this.metroToggleUseFrozenOrb.Location = new System.Drawing.Point(20, 24);
             this.metroToggleUseFrozenOrb.Name = "metroToggleUseFrozenOrb";
             this.metroToggleUseFrozenOrb.Size = new System.Drawing.Size(60, 20);
             this.metroToggleUseFrozenOrb.TabIndex = 4;
@@ -65,7 +67,7 @@
             this.metroLabelUseBlizzard.ForeColor = System.Drawing.Color.Black;
             this.metroLabelUseBlizzard.Location = new System.Drawing.Point(86, 50);
             this.metroLabelUseBlizzard.Name = "metroLabelUseBlizzard";
-            this.metroLabelUseBlizzard.Size = new System.Drawing.Size(379, 20);
+            this.metroLabelUseBlizzard.Size = new System.Drawing.Size(151, 20);
             this.metroLabelUseBlizzard.TabIndex = 7;
             this.metroLabelUseBlizzard.Text = "Use Blizzard";
             this.metroLabelUseBlizzard.UseCustomBackColor = true;
@@ -84,11 +86,37 @@
             this.metroToggleUseBlizzard.UseSelectable = true;
             this.metroToggleUseBlizzard.CheckedChanged += new System.EventHandler(this.metroToggleUseBlizzard_CheckedChanged);
             // 
+            // metroToggleUseCDs
+            // 
+            this.metroToggleUseCDs.BackColor = System.Drawing.Color.Transparent;
+            this.metroToggleUseCDs.DisplayStatus = false;
+            this.metroToggleUseCDs.Location = new System.Drawing.Point(20, 76);
+            this.metroToggleUseCDs.Name = "metroToggleUseCDs";
+            this.metroToggleUseCDs.Size = new System.Drawing.Size(60, 20);
+            this.metroToggleUseCDs.TabIndex = 8;
+            this.metroToggleUseCDs.Text = "Off";
+            this.metroToggleUseCDs.UseCustomBackColor = true;
+            this.metroToggleUseCDs.UseSelectable = true;
+            // 
+            // metroLabelUseCDs
+            // 
+            this.metroLabelUseCDs.BackColor = System.Drawing.Color.Transparent;
+            this.metroLabelUseCDs.ForeColor = System.Drawing.Color.Black;
+            this.metroLabelUseCDs.Location = new System.Drawing.Point(86, 76);
+            this.metroLabelUseCDs.Name = "metroLabelUseCDs";
+            this.metroLabelUseCDs.Size = new System.Drawing.Size(151, 20);
+            this.metroLabelUseCDs.TabIndex = 9;
+            this.metroLabelUseCDs.Text = "Use Cooldowns";
+            this.metroLabelUseCDs.UseCustomBackColor = true;
+            this.metroLabelUseCDs.UseCustomForeColor = true;
+            // 
             // UserControlMage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.Controls.Add(this.metroLabelUseCDs);
+            this.Controls.Add(this.metroToggleUseCDs);
             this.Controls.Add(this.metroLabelUseBlizzard);
             this.Controls.Add(this.metroToggleUseBlizzard);
             this.Controls.Add(this.metroLabelUseFrozenOrb);
@@ -107,5 +135,7 @@
         private MetroFramework.Controls.MetroToggle metroToggleUseFrozenOrb;
         private MetroFramework.Controls.MetroLabel metroLabelUseBlizzard;
         private MetroFramework.Controls.MetroToggle metroToggleUseBlizzard;
+        private MetroFramework.Controls.MetroToggle metroToggleUseCDs;
+        private MetroFramework.Controls.MetroLabel metroLabelUseCDs;
     }
 }
