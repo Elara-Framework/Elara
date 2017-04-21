@@ -11,6 +11,7 @@ using Elara.WoW;
 using Elara.WoW.Objects;
 using Elara.TreeSharp;
 using Action = Elara.TreeSharp.Action;
+using Elara.WoW.FrameScript;
 
 namespace Elara.CombatAssist
 {
@@ -39,9 +40,31 @@ namespace Elara.CombatAssist
             this.Root.Start(this);
         }
 
+        RunStatus AcceptLFGInviteAction(object ctx)
+        {
+            var l_Frame = GameOwner.GetFrameByName<SimpleFrame>("LFGDungeonReadyDialogEnterDungeonButton");
+            if (l_Frame?.IsVisible == true)
+            {
+                GameOwner.Logger.WriteLine("Combat Assist", "Accepting LFG invitation ...");
+                GameOwner.BringWindowForeground();
+                Thread.Sleep(1000); // Just in case you have 90's computer (I'm sorry for you)
+
+                using (var l_LockedCursor = GameOwner.ActiveMouseController.LockCursor(l_Frame.Center))
+                {
+                    l_LockedCursor.Click(MouseButtons.Left);
+                }
+                return RunStatus.Success;
+            }
+            return RunStatus.Failure;
+        }
+
         private Composite CreateComposite()
         {
             return new PrioritySelector(
+                new Decorator(ret => OwnerCombatAssist.Settings.AutoAcceptLFGInvite &&
+                                     GameOwner.GetFrameByName<SimpleFrame>("LFGDungeonReadyDialogEnterDungeonButton")?.IsVisible == true,
+                    new Action(AcceptLFGInviteAction)
+                ),
                 new Decorator(ret => OwnerCombatAssist.Elara.CombatScript != null,
                     new Action(delegate(object context)
                     {
@@ -49,7 +72,7 @@ namespace Elara.CombatAssist
 
                         if (l_Target != null && l_Target.Health > 0 && !l_Target.IsNotAttackable)
                         {
-                            if (!this.OwnerCombatAssist.Settings.InCombatOnly || LocalPlayer.IsIncombat)
+                            if (this.OwnerCombatAssist.Settings.AllowPullTarget || LocalPlayer.IsIncombat)
                             {
                                 if (LocalPlayer.IsIncombat)
                                     OwnerCombatAssist.Elara.CombatScript.Combat(PlayerController);

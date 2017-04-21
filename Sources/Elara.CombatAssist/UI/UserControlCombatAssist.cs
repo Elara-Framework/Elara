@@ -25,7 +25,8 @@ namespace Elara.CombatAssist
         {
             var l_Action = (Action)(() =>
             {
-                metroToggleAttackInCombatOnly.Checked = p_Settings.InCombatOnly;
+                metroToggleAllowPullTarget.Checked = p_Settings.AllowPullTarget;
+                metroToggleAutoAcceptLFGInvite.Checked = p_Settings.AutoAcceptLFGInvite;
             });
 
             if (InvokeRequired)
@@ -36,7 +37,12 @@ namespace Elara.CombatAssist
 
         private void metroToggleAttackInCombatOnly_CheckedChanged(object sender, EventArgs e)
         {
-            m_CombatAssist.Settings.InCombatOnly = metroToggleAttackInCombatOnly.Checked;
+            m_CombatAssist.Settings.AllowPullTarget = metroToggleAllowPullTarget.Checked;
+        }
+
+        private void metroToggleAutoAcceptLFGInvite_CheckedChanged(object sender, EventArgs e)
+        {
+            m_CombatAssist.Settings.AutoAcceptLFGInvite = metroToggleAutoAcceptLFGInvite.Checked;
         }
     }
 }

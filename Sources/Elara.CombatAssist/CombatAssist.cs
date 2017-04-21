@@ -20,7 +20,8 @@ namespace Elara.CombatAssist
         public class CombatAssistSettings
         {
             public int TickInterval = 100;
-            public bool InCombatOnly = true;
+            public bool AllowPullTarget = false;
+            public bool AutoAcceptLFGInvite = false;
         }
 
         public CombatAssist(Elara p_Elara)

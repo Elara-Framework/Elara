@@ -143,6 +143,7 @@ namespace Elara.BaseCombats
                 var l_HostilesAroundTarget = CombatUtils.GetAttackersAroundPosition(this.Game, l_Target.Position, p_MaxRange: 8.0f);
 
                 if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_LocalPlayer.IsMoving == false &&                                  // Not moving
                     RuneOfPower.ChargesAvailable > 0 &&                                 // Do we have a charge
                     l_SpellController.CanUseSpell(RuneOfPower, l_Target))               // Use SpellController generic conditions
                 {
@@ -151,6 +152,7 @@ namespace Elara.BaseCombats
                 }
                 
                 if (CurrentSetting.UseFrozenOrb &&                                      // Check user setting
+                    l_LocalPlayer.IsMoving == false &&                                  // Not moving
                     l_LocalPlayer.IsFacingHeading(l_Target, 0.3f) &&                    // Check target facing
                     l_LocalPlayer.CastingInfo == null &&                                // Not casting
                     l_SpellController.CanUseSpell(FrozenOrb, l_Target))                 // Use SpellController generic conditions
@@ -160,6 +162,7 @@ namespace Elara.BaseCombats
                 }
 
                 if (CurrentSetting.UseBlizzard &&                                       // Check user setting
+                    l_LocalPlayer.IsMoving == false &&                                  // Not moving
                     l_HostilesAroundTarget.Count >= 2 &&                                // Check adds around target
                     l_TargetVisibleOnScreen &&                                          // Check that target is visible to click on
                     l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
@@ -171,6 +174,7 @@ namespace Elara.BaseCombats
                 }
 
                 if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_LocalPlayer.IsMoving == false &&                                  // Not moving
                     l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
                     l_LocalPlayer.GetAuraById(AURA_RUNE_OF_POWER) == null &&            // Check that we don't have Rune of Power buff
                     l_SpellController.CanUseSpell(RayOfFrost, l_Target))                // Use SpellController generic conditions
@@ -199,6 +203,7 @@ namespace Elara.BaseCombats
 
                 /* TODO : Check adds around target */
                 if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_LocalPlayer.IsMoving == false &&                                  // Not moving
                     l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
                     l_LocalPlayer.GetAuraById(AURA_FINGERS_OF_FROST)?.Stack >= 1 &&     // Check for proc
                     l_Target.GetAuraById(AURA_FROSTBOMB) == null &&                     // Check if buff is not already applied
@@ -209,6 +214,7 @@ namespace Elara.BaseCombats
                 }
 
                 if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_LocalPlayer.IsMoving == false &&                                  // Not moving
                     l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
                     l_LocalPlayer.GetAuraById(AURA_ICICLES)?.Stack >= 5 &&              // Check for proc
                     l_SpellController.CanUseSpell(GlacialSpike, l_Target))              // Use SpellController generic conditions
@@ -218,6 +224,7 @@ namespace Elara.BaseCombats
                 }
 
                 if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_LocalPlayer.IsMoving == false &&                                  // Not moving
                     l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
                     l_SpellController.CanUseSpell(FrostBolt, l_Target))                 // Use SpellController generic conditions
                 {
