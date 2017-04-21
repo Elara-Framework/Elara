@@ -166,7 +166,8 @@ namespace Elara.BaseCombats
                 }
 
                 if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
-                  l_LocalPlayer.IsMoving == false &&                                  // Not moving
+                  l_LocalPlayer.IsMoving == false &&
+                   l_SpellController.CanUseSpell(IcyVeins, CheckRange: false) &&                             
                   CurrentSetting.UseCDs )
                  
                    

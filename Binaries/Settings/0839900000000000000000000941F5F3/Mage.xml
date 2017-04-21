@@ -2,5 +2,5 @@
 <MageSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <UseFrozenOrb>false</UseFrozenOrb>
   <UseBlizzard>false</UseBlizzard>
-  <UseCoolDowns>false</UseCoolDowns>
+  <UseCoolDowns>true</UseCoolDowns>
 </MageSettings>
