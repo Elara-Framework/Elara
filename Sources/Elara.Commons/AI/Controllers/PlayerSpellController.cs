@@ -23,7 +23,8 @@ namespace Elara.AI.Controllers
             WoW.Objects.WowUnit Target = null,
             bool CheckCooldown = true,
             bool CheckGlobalCooldown = true,
-            bool CheckRange = true)
+            bool CheckRange = true,
+            bool CheckCharges = true)
         {
             var l_Target = Target ?? Owner.LocalPlayer?.Target;
 
@@ -31,6 +32,9 @@ namespace Elara.AI.Controllers
                 return false;
 
             if (CheckGlobalCooldown && Owner.GameOwner.SpellHistory.IsGlobalCooldownActive)
+                return false;
+
+            if (CheckCharges && p_Spell.ChargesMax > 0 && p_Spell.ChargesAvailable == 0)
                 return false;
 
             if (CheckRange && l_Target != null)
