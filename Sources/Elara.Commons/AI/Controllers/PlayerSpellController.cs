@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Elara.WoW;
 using Elara.Utils;
+using Elara.WoW.Objects;
 
 namespace Elara.AI.Controllers
 {
@@ -26,8 +27,6 @@ namespace Elara.AI.Controllers
             bool CheckRange = true,
             bool CheckCharges = true)
         {
-            var l_Target = Target ?? Owner.LocalPlayer?.Target;
-
             if (CheckCooldown && p_Spell.IsOnCooldown)
                 return false;
 
@@ -37,10 +36,10 @@ namespace Elara.AI.Controllers
             if (CheckCharges && p_Spell.ChargesMax > 0 && p_Spell.ChargesAvailable == 0)
                 return false;
 
-            if (CheckRange && l_Target != null)
+            if (CheckRange && Target != null)
             {
                 // TODO : Detect hostile / friendly target
-                double l_TargetRange = l_Target.DistanceTo(Owner.LocalPlayer);
+                double l_TargetRange = Target.DistanceTo(Owner.LocalPlayer);
                 float l_MaxRange = Math.Max(p_Spell.MaxRangeFriendly, p_Spell.MaxRangeHostile);
                 float l_MinRange = Math.Min(p_Spell.MinRangeFriendly, p_Spell.MinRangeHostile);
 
@@ -48,21 +47,39 @@ namespace Elara.AI.Controllers
                     return false;
             }
 
-            return GetKeyBindBySpellId(p_Spell.SpellId)?.IsUsableAction == true;
+            return GetKeyBindBySpell(p_Spell)?.IsUsableAction == true;
         }
 
-        public bool UseSpell(SpellInfo p_Spell)
+        public bool UseSpell(SpellInfo p_Spell, WowUnit p_Unit = null)
         {
-            var l_KeyBind = GetKeyBindBySpellId(p_Spell.SpellId);
+            var l_KeyBind = GetKeyBindBySpell(p_Spell);
+            var l_Bindings = Owner.GameOwner.Bindings;
+            var l_CurrentTargetGuid = Owner.LocalPlayer.TargetGuid;
+
+            Owner.TargetUnitWithHotkeys(p_Unit);
 
             Owner.GameOwner.Logger.WriteLine("Debug", "[PlayerSpellController] Use spell : " + p_Spell);
 
-            return l_KeyBind?.Press() == true;
+            var l_Result = l_KeyBind?.Press() == true;
+
+            if (!(Owner.LocalPlayer.TargetGuid == l_CurrentTargetGuid))
+            {
+                if (Owner.LocalPlayer.LastEnemyGuid == l_CurrentTargetGuid)
+                {
+                    l_Bindings["TARGETPREVIOUSENEMY"]?.Press();
+                }
+                else if (Owner.LocalPlayer.LastFriendGuid == l_CurrentTargetGuid)
+                {
+                    l_Bindings["TARGETPREVIOUSFRIEND"]?.Press();
+                }
+            }
+
+            return l_Result;
         }
 
         public bool UseSpell(SpellInfo p_Spell, Vector3 p_Position)
         {
-            var l_KeyBind = GetKeyBindBySpellId(p_Spell.SpellId);
+            var l_KeyBind = GetKeyBindBySpell(p_Spell);
 
             Owner.GameOwner.Logger.WriteLine("Debug", "[PlayerSpellController] Use aoe spell : " + p_Spell);
 
@@ -72,21 +89,19 @@ namespace Elara.AI.Controllers
             {
                 using (var l_LockedCursor = Owner.GameOwner.ActiveMouseController.LockCursor(l_ScreenPosition))
                 {
-                    l_LockedCursor.Click(System.Windows.Forms.MouseButtons.Left);
+                    l_LockedCursor.Click(MouseButtons.Left);
                 }
             }
 
             return false;
         }
 
-        private ActionBar.ActionBarSlot GetKeyBindBySpellId(int p_SpellId)
+        private ActionBar.ActionBarSlot GetKeyBindBySpell(SpellInfo p_Spell)
         {
-            var l_OverridenSpell = Owner.GameOwner.SpellBook.GetOverridenSpell(p_SpellId);
-
             return Owner.GameOwner.ActionBar.GetActiveSlots().FirstOrDefault(x =>
                 x.Filled && 
                 x.Type == ActionBar.ActionBarSlot.SlotFlags.Spell && 
-                (x.ActionId == p_SpellId || l_OverridenSpell?.BaseSpellId == x.ActionId) && 
+                x.SpellId == p_Spell.SpellId && 
                 x.CanPress);
         }
     }

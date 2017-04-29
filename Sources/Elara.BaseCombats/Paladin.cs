@@ -27,6 +27,12 @@ namespace Elara.BaseCombats
         private SpellInfo TemplarsVerdict;
         private SpellInfo BladeOfJustice;
         private SpellInfo CrusaderStrike;
+        private SpellInfo Consecration;
+        private SpellInfo AvengersShield;
+        private SpellInfo BlessedHammers;
+        private SpellInfo ShieldOfTheRighteous;
+        private SpellInfo LightOfTheProtector;
+        private SpellInfo HandOfTheProtector;
 
         private UI.UserControlPaladin m_Interface;
         public PaladinSettings CurrentSetting { get; private set; } = new PaladinSettings();
@@ -55,6 +61,12 @@ namespace Elara.BaseCombats
             TemplarsVerdict = new SpellInfo(Game, 85256);
             BladeOfJustice = new SpellInfo(Game, 184575);
             CrusaderStrike = new SpellInfo(Game, 35395);
+            Consecration = new SpellInfo(Game, 26573);
+            AvengersShield = new SpellInfo(Game, 31935);
+            ShieldOfTheRighteous = new SpellInfo(Game, 53600);
+            LightOfTheProtector = new SpellInfo(Game, 184092);
+            HandOfTheProtector = new SpellInfo(Game, 213652);
+            BlessedHammers = new SpellInfo(Game, 204019);
         }
 
         public override void OnUnload()
@@ -122,7 +134,71 @@ namespace Elara.BaseCombats
 
         private void Combat_Protection(PlayerController p_PlayerController)
         {
-            Elara.Logger.WriteLine("Paladin", "Error : Protection specialization is not supported (yet) !");
+            var l_SpellController = p_PlayerController.SpellController;
+            var l_LocalPlayer = p_PlayerController.LocalPlayer;
+            var l_Target = l_LocalPlayer?.Target;
+
+            if (l_LocalPlayer != null & l_Target != null && l_Target.IsAlive)
+            {
+                var l_TargetScreenPosition = new Point();
+                var l_TargetVisibleOnScreen = this.Game.WorldFrame?.ActiveCamera?.WorldToScreen(l_Target.Position, ref l_TargetScreenPosition) == true;
+                var l_HostilesAroundTarget = CombatUtils.GetAttackersAroundPosition(this.Game, l_Target.Position, p_MaxRange: 8.0f);
+                var l_HostilesAroundPlayer = CombatUtils.GetAttackersAroundPosition(this.Game, l_LocalPlayer.Position, p_MaxRange: 8.0f);
+
+                if (l_LocalPlayer.HealthPercent <= 70 &&                                // Check player health
+                    l_SpellController.CanUseSpell(LightOfTheProtector, CheckRange: false))                 // Use SpellController generic conditions
+                {
+                    l_SpellController.UseSpell(LightOfTheProtector);
+                    return;
+                }
+
+                if (l_LocalPlayer.HealthPercent <= 70 &&                                // Check player health
+                    l_SpellController.CanUseSpell(HandOfTheProtector, CheckRange: false))                 // Use SpellController generic conditions
+                {
+                    l_SpellController.UseSpell(HandOfTheProtector);
+                    return;
+                }
+
+                if (l_LocalPlayer.HealthPercent <= 70 &&                                // Check player health
+                    l_SpellController.CanUseSpell(ShieldOfTheRighteous, CheckRange: false))                // Use SpellController generic conditions
+                {
+                    l_SpellController.UseSpell(ShieldOfTheRighteous);
+                    return;
+                }
+
+                /* TODO : Fix range detection */
+                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_Target.DistanceTo(l_LocalPlayer) <= 30.0f &&
+                    l_SpellController.CanUseSpell(AvengersShield, l_Target, CheckRange: false))            // Use SpellController generic conditions
+                {
+                    l_SpellController.UseSpell(AvengersShield);
+                    return;
+                }
+
+                if (l_Target.DistanceTo(l_LocalPlayer) <= 5.0f &&
+                    l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_SpellController.CanUseSpell(Consecration, CheckRange: false))                        // Use SpellController generic conditions
+                {
+                    l_SpellController.UseSpell(Consecration);
+                    return;
+                }
+
+                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_HostilesAroundPlayer.Count >= 2 &&
+                    l_SpellController.CanUseSpell(BlessedHammers, CheckRange: false))            // Use SpellController generic conditions
+                {
+                    l_SpellController.UseSpell(BlessedHammers);
+                    return;
+                }
+
+                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
+                    l_SpellController.CanUseSpell(Judgment, l_Target))                  // Use SpellController generic conditions
+                {
+                    l_SpellController.UseSpell(Judgment);
+                    return;
+                }
+            }
         }
 
         private void Combat_Retribution(PlayerController p_PlayerController)
@@ -137,6 +213,14 @@ namespace Elara.BaseCombats
                 var l_TargetVisibleOnScreen = this.Game.WorldFrame?.ActiveCamera?.WorldToScreen(l_Target.Position, ref l_TargetScreenPosition) == true;
                 var l_HostilesAroundTarget = CombatUtils.GetAttackersAroundPosition(this.Game, l_Target.Position, p_MaxRange: 8.0f);
                 var l_HostilesAroundPlayer = CombatUtils.GetAttackersAroundPosition(this.Game, l_LocalPlayer.Position, p_MaxRange: 8.0f);
+
+                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                    l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
+                    l_SpellController.CanUseSpell(CrusaderStrike, l_Target))            // Use SpellController generic conditions
+                {
+                    l_SpellController.UseSpell(CrusaderStrike);
+                    return;
+                }
 
                 /* AOE */
                 if (l_HostilesAroundPlayer.Count >= 2)
@@ -175,14 +259,6 @@ namespace Elara.BaseCombats
                     l_SpellController.CanUseSpell(BladeOfJustice, l_Target))            // Use SpellController generic conditions
                 {
                     l_SpellController.UseSpell(BladeOfJustice);
-                    return;
-                }
-
-                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
-                    l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
-                    l_SpellController.CanUseSpell(CrusaderStrike, l_Target))            // Use SpellController generic conditions
-                {
-                    l_SpellController.UseSpell(CrusaderStrike);
                     return;
                 }
             }

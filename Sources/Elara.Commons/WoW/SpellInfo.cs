@@ -34,10 +34,12 @@ namespace Elara.WoW
 
         public string Name => SpellRecord?.Name ?? string.Empty;
 
-        public bool IsOnCooldown => GameOwner.SpellHistory.IsSpellOnCooldown(SpellId);
+        public bool IsOnCooldown => GameOwner.SpellHistory.IsSpellOnCooldown(SpellId, this.SpellCategoriesRecord?.CategoryId ?? 0);
+
+        public bool IsKnown => GameOwner.SpellBook.IsSpellKnown(SpellId);
 
         public bool IsOnActionBar =>
-            GameOwner.ActionBar.GetActiveSlots().Any(x => x.Type == ActionBar.ActionBarSlot.SlotFlags.Spell && x.ActionId == SpellId);
+            GameOwner.ActionBar.GetActiveSlots().Any(x => x.Type == ActionBar.ActionBarSlot.SlotFlags.Spell && x.SpellId == SpellId);
 
         public bool CheckSpellAttribute(SpellMiscRecord.SpellAttributes p_Attribute)
         {
