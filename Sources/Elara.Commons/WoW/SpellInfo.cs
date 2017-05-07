@@ -11,11 +11,11 @@ namespace Elara.WoW
     {
         public const float INVALID_RANGE = float.MaxValue;
 
-        private readonly DB.SpellRecord SpellRecord;
-        private readonly DB.SpellCategoriesRecord SpellCategoriesRecord;
-        private readonly DB.SpellMiscRecord SpellMiscRecord;
-        private readonly DB.SpellRangeRecord SpellRangeRecord;
-        private readonly DB.SpellCategoryRecord SpellChargeCategory;
+        private readonly SpellRecord SpellRecord;
+        private readonly SpellCategoriesRecord SpellCategoriesRecord;
+        private readonly SpellMiscRecord SpellMiscRecord;
+        private readonly SpellRangeRecord SpellRangeRecord;
+        private readonly SpellCategoryRecord SpellChargeCategory;
         public readonly Game GameOwner;
         public readonly int SpellId;
 
@@ -34,7 +34,31 @@ namespace Elara.WoW
 
         public string Name => SpellRecord?.Name ?? string.Empty;
 
-        public bool IsOnCooldown => GameOwner.SpellHistory.IsSpellOnCooldown(SpellId, this.SpellCategoriesRecord?.CategoryId ?? 0);
+        public TimeSpan CooldownRemaining
+        {
+            get
+            {
+                var l_Cooldowns = GameOwner.SpellHistory.GetCooldowns();
+                var l_CategoryId = this.SpellCategoriesRecord?.CategoryId ?? 0;
+
+                foreach (var l_Cooldown in l_Cooldowns)
+                {
+                    if (l_Cooldown.SpellId == this.SpellId || (l_CategoryId != 0 && l_Cooldown.CategoryId == l_CategoryId))
+                    {
+                        if (l_Cooldown.TimeRemaing > TimeSpan.Zero)
+                            return l_Cooldown.TimeRemaing;
+                        else if (l_Cooldown.CategoryRemaining > TimeSpan.Zero)
+                            return l_Cooldown.CategoryRemaining;
+                        else if (l_Cooldown.GcdRemaining > TimeSpan.Zero)
+                            return l_Cooldown.GcdRemaining;
+                    }
+                }
+
+                return TimeSpan.Zero;
+            }
+        }
+
+        public bool IsOnCooldown => CooldownRemaining > TimeSpan.Zero;
 
         public bool IsKnown => GameOwner.SpellBook.IsSpellKnown(SpellId);
 
@@ -52,9 +76,15 @@ namespace Elara.WoW
 
         public bool IsTalent => CheckSpellAttribute(SpellMiscRecord.SpellAttributes.IS_TALENT);
 
-        public bool IsCharge => CheckSpellAttribute(SpellMiscRecord.SpellAttributes.CHARGE);
+        public bool HasChargeMechanic => CheckSpellAttribute(SpellMiscRecord.SpellAttributes.CHARGE);
 
         public bool DontBreakStealth => CheckSpellAttribute(SpellMiscRecord.SpellAttributes.DONT_BREAK_STEALTH);
+
+        public bool IsSelfOnlySpell => SpellMiscRecord?.SpellRangeId == 1;
+
+        public bool IsMeleeSpell => SpellMiscRecord?.SpellRangeId == 2;
+
+        public bool HasRange => SpellRangeRecord != null && !IsMeleeSpell && !IsSelfOnlySpell;
 
         public float MinRangeFriendly => SpellRangeRecord?.MinRangeFriendly ?? INVALID_RANGE;
 

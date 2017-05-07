@@ -12,6 +12,8 @@ namespace Elara.AI.Controllers
     {
         public readonly PlayerSpellController SpellController;
 
+        public readonly PlayerMoveController MoveController;
+
         public ObjectManager ObjectManager => this.GameOwner.ObjectManager;
 
         public WowLocalPlayer LocalPlayer => this.GameOwner.ObjectManager.LocalPlayer;
@@ -20,6 +22,7 @@ namespace Elara.AI.Controllers
             : base(p_Game)
         {
             this.SpellController = new PlayerSpellController(this);
+            this.MoveController = new PlayerMoveController(this);
         }
 
         private Action GetTargetingAction(WowUnit p_Unit)

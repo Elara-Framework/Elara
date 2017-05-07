@@ -212,6 +212,7 @@ namespace Elara.BaseCombats
                     l_SpellController.UseSpell(FrostBomb);
                     return;
                 }
+                
 
                 if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
                     l_LocalPlayer.IsMoving == false &&                                  // Not moving

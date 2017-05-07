@@ -30,14 +30,14 @@ namespace Elara.BaseCombats
             var l_LocalPlayer = p_Game.ObjectManager.LocalPlayer;
             var l_PartyMembers = p_Game.PartyInfo.GetActiveParty()?.Members;
 
-            if (p_IncludeSelf && l_LocalPlayer != null)
+            if (p_IncludeSelf && l_LocalPlayer?.IsAlive == true)
             {
                 l_Players.Add(l_LocalPlayer);
             }
 
             if (l_PartyMembers != null)
             {
-                l_Players.AddRange(l_PartyMembers.Where(x => x.Player != null).Select(x => x.Player));
+                l_Players.AddRange(l_PartyMembers.Where(x => x.Player?.IsAlive == true).Select(x => x.Player));
             }
 
             return l_Players.OrderBy(x => x.HealthPercent).FirstOrDefault();

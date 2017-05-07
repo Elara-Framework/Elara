@@ -36,7 +36,7 @@ namespace Elara.AI.Controllers
             if (CheckCharges && p_Spell.ChargesMax > 0 && p_Spell.ChargesAvailable == 0)
                 return false;
 
-            if (CheckRange && Target != null)
+            if (CheckRange && Target != null && p_Spell.HasRange)
             {
                 // TODO : Detect hostile / friendly target
                 double l_TargetRange = Target.DistanceTo(Owner.LocalPlayer);
