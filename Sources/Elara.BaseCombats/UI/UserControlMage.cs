@@ -23,8 +23,16 @@ namespace Elara.BaseCombats.UI
 
         public void UpdateSettings(Mage.MageSettings p_Settings)
         {
-            metroToggleUseFrozenOrb.Checked = p_Settings.UseFrozenOrb;
-            metroToggleUseBlizzard.Checked = p_Settings.UseBlizzard;
+            var l_Action = (Action)(() =>
+            {
+                metroToggleUseFrozenOrb.Checked = p_Settings.UseFrozenOrb;
+                metroToggleUseBlizzard.Checked = p_Settings.UseBlizzard;
+            });
+
+            if (InvokeRequired)
+                BeginInvoke(l_Action);
+            else
+                l_Action();
         }
 
         private void metroToggleUseFrozenOrb_CheckedChanged(object sender, EventArgs e)

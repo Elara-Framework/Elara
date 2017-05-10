@@ -10,7 +10,7 @@ namespace Elara.Navigation
         /// <summary>
         /// Size in file
         /// </summary>
-        public const int SIZE = 8 + 8 + 4 + 4;
+        public const int SIZE = 8 + 8 + 4;
 
         ////////////////////////////////////////////////////////
 
@@ -23,10 +23,6 @@ namespace Elara.Navigation
         /// </summary>
         public UInt64 ToNode { get; set; }
         /// <summary>
-        /// Node Weight
-        /// </summary>
-        public float Weight { get; set; }
-        /// <summary>
         /// Distance between the 2 nodes
         /// </summary>
         public float Distance { get; set; }
@@ -38,10 +34,9 @@ namespace Elara.Navigation
         /// </summary>
         public NavNodeConnection()
         {
-            FromNode = 0;
-            ToNode = 0;
-            Weight = 0.0f;
-            Distance = 0.0f;
+            FromNode    = 0;
+            ToNode      = 0;
+            Distance    = 0.0f;
         }
 
         ////////////////////////////////////////////////////////

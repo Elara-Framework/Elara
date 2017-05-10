@@ -39,6 +39,7 @@
             this.metroLabelLastState = new MetroFramework.Controls.MetroLabel();
             this.metroLabel6 = new MetroFramework.Controls.MetroLabel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.metroButtonToggleFisher = new MetroFramework.Controls.MetroButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -154,11 +155,26 @@
             this.pictureBox1.TabIndex = 10;
             this.pictureBox1.TabStop = false;
             // 
+            // metroButtonToggleFisher
+            // 
+            this.metroButtonToggleFisher.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroButtonToggleFisher.BackColor = System.Drawing.SystemColors.Control;
+            this.metroButtonToggleFisher.Location = new System.Drawing.Point(3, 317);
+            this.metroButtonToggleFisher.Name = "metroButtonToggleFisher";
+            this.metroButtonToggleFisher.Size = new System.Drawing.Size(694, 30);
+            this.metroButtonToggleFisher.TabIndex = 13;
+            this.metroButtonToggleFisher.Text = "Start fishing";
+            this.metroButtonToggleFisher.UseCustomForeColor = true;
+            this.metroButtonToggleFisher.UseSelectable = true;
+            this.metroButtonToggleFisher.Click += new System.EventHandler(this.metroButtonToggleFisher_Click);
+            // 
             // UserControlFisher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.Controls.Add(this.metroButtonToggleFisher);
             this.Controls.Add(this.metroLabelLastState);
             this.Controls.Add(this.metroLabel6);
             this.Controls.Add(this.pictureBox1);
@@ -188,5 +204,6 @@
         private System.Windows.Forms.Timer timerRefreshUI;
         private MetroFramework.Controls.MetroLabel metroLabelLastState;
         private MetroFramework.Controls.MetroLabel metroLabel6;
+        private MetroFramework.Controls.MetroButton metroButtonToggleFisher;
     }
 }

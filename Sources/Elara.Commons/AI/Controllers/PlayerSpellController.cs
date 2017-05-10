@@ -25,8 +25,18 @@ namespace Elara.AI.Controllers
             bool CheckCooldown = true,
             bool CheckGlobalCooldown = true,
             bool CheckRange = true,
-            bool CheckCharges = true)
+            bool CheckCharges = true,
+            bool CheckTargetFacing = true,
+            bool CheckCasting = true)
         {
+            var l_LocalPlayer = Owner.LocalPlayer;
+
+            if (l_LocalPlayer == null)
+                return false;
+
+            if (l_LocalPlayer.CastingInfo != null)
+                return false;
+
             if (CheckCooldown && p_Spell.IsOnCooldown)
                 return false;
 
@@ -36,40 +46,60 @@ namespace Elara.AI.Controllers
             if (CheckCharges && p_Spell.ChargesMax > 0 && p_Spell.ChargesAvailable == 0)
                 return false;
 
-            if (CheckRange && Target != null && p_Spell.HasRange)
-            {
-                // TODO : Detect hostile / friendly target
-                double l_TargetRange = Target.DistanceTo(Owner.LocalPlayer);
-                float l_MaxRange = Math.Max(p_Spell.MaxRangeFriendly, p_Spell.MaxRangeHostile);
-                float l_MinRange = Math.Min(p_Spell.MinRangeFriendly, p_Spell.MinRangeHostile);
+            if (Target != null && !(Target.Guid == l_LocalPlayer.Guid) && p_Spell.RequireFacingTarget &&
+                !l_LocalPlayer.IsFacingHeading(Target.Position, 1.5f))
+                return false;
 
-                if (l_TargetRange > l_MaxRange || l_TargetRange < l_MinRange)
-                    return false;
-            }
+            if (CheckRange && !p_Spell.IsInRange(Target))
+                return false;
 
-            return GetKeyBindBySpell(p_Spell)?.IsUsableAction == true;
+            var l_UsableAction = GetKeyBindBySpell(p_Spell)?.IsUsableAction == true;
+
+            if (!l_UsableAction)
+                return false;
+
+            return true;
         }
 
         public bool UseSpell(SpellInfo p_Spell, WowUnit p_Unit = null)
         {
+            var l_LocalPlayer = Owner.LocalPlayer;
+
+            if (l_LocalPlayer == null)
+                return false;
+
             var l_KeyBind = GetKeyBindBySpell(p_Spell);
             var l_Bindings = Owner.GameOwner.Bindings;
-            var l_CurrentTargetGuid = Owner.LocalPlayer.TargetGuid;
+            var l_CurrentTargetGuid = l_LocalPlayer.TargetGuid;
+            var l_Target = p_Unit ?? l_LocalPlayer.Target;
 
-            Owner.TargetUnitWithHotkeys(p_Unit);
+            if (l_Target != null && 
+                !(l_Target.Guid == l_CurrentTargetGuid) && 
+                !p_Spell.IsSelfOnlySpell &&
+                !Owner.TargetUnitWithHotkeys(l_Target))
+            {
+                Owner.GameOwner.Logger.WriteLine("PlayerSpellController", "UseSpell - Failed to target unit: " + l_Target.Name);
+                return false;
+            }
 
-            Owner.GameOwner.Logger.WriteLine("Debug", "[PlayerSpellController] Use spell : " + p_Spell);
-
+            Owner.GameOwner.Logger.WriteLine("Debug", "[PlayerSpellController] Use spell : " + p_Spell + (l_Target != null ? " on : " + l_Target.Name : string.Empty));
             var l_Result = l_KeyBind?.Press() == true;
 
-            if (!(Owner.LocalPlayer.TargetGuid == l_CurrentTargetGuid))
+            if (!l_Result)
             {
-                if (Owner.LocalPlayer.LastEnemyGuid == l_CurrentTargetGuid)
+                Owner.GameOwner.Logger.WriteLine("PlayerSpellController", "UseSpell - Keybind press failed !");
+            }
+
+            if (!(l_LocalPlayer.TargetGuid == l_CurrentTargetGuid))
+            {
+                if (l_LocalPlayer.LastEnemyGuid == l_CurrentTargetGuid)
                 {
+                    Owner.GameOwner.Logger.WriteLine("PlayerSpellController", "UseSpell - Target previous enemy");
                     l_Bindings["TARGETPREVIOUSENEMY"]?.Press();
                 }
-                else if (Owner.LocalPlayer.LastFriendGuid == l_CurrentTargetGuid)
+                else if (l_LocalPlayer.LastFriendGuid == l_CurrentTargetGuid)
                 {
+                    Owner.GameOwner.Logger.WriteLine("PlayerSpellController", "UseSpell - Target previous friend");
                     l_Bindings["TARGETPREVIOUSFRIEND"]?.Press();
                 }
             }

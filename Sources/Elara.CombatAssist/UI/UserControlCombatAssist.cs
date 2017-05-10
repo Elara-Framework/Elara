@@ -44,5 +44,29 @@ namespace Elara.CombatAssist
         {
             m_CombatAssist.Settings.AutoAcceptLFGInvite = metroToggleAutoAcceptLFGInvite.Checked;
         }
+
+        private void timerRefreshUI_Tick(object sender, EventArgs e)
+        {
+            if (m_CombatAssist.Running)
+            {
+                metroButtonToggleCombatAssist.Text = "Stop combat assist";
+                metroButtonToggleCombatAssist.ForeColor = Color.Red;
+            }
+            else
+            {
+                metroButtonToggleCombatAssist.Text = "Start combat assist";
+                metroButtonToggleCombatAssist.ForeColor = Color.Green;
+            }
+        }
+
+        private void metroButtonToggleCombatAssist_Click(object sender, EventArgs e)
+        {
+            if (!m_CombatAssist.Running)
+                m_CombatAssist.Start();
+            else
+                m_CombatAssist.Stop();
+
+            metroLabelAllowPullTarget.Focus(); // Dirty
+        }
     }
 }

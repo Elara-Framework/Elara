@@ -23,7 +23,15 @@ namespace Elara.BaseCombats.UI
 
         public void UpdateSettings(Paladin.PaladinSettings p_Settings)
         {
+            var l_Action = (Action)(() =>
+            {
+                // Update UI controls
+            });
 
+            if (InvokeRequired)
+                BeginInvoke(l_Action);
+            else
+                l_Action();
         }
     }
 }

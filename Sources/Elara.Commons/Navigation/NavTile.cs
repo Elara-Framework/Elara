@@ -16,7 +16,7 @@ namespace Elara.Navigation
         /// <summary>
         /// File version
         /// </summary>
-        public const int NAV_TILE_VERSION = 7;
+        public const int NAV_TILE_VERSION = 8;
         /// <summary>
         /// Minimum distance between two nodes
         /// </summary>
@@ -82,6 +82,10 @@ namespace Elara.Navigation
         ////////////////////////////////////////////////////////
 
         /// <summary>
+        /// Is main tile for navigation
+        /// </summary>
+        private bool m_IsMain = false;
+        /// <summary>
         /// Draw buffer need to be rebuilt
         /// </summary>
         private bool m_GraphicDirty = false;
@@ -103,11 +107,13 @@ namespace Elara.Navigation
         /// <param name="p_TileFileName">Tile file name</param>
         /// <param name="p_TileX">Tile grid X</param>
         /// <param name="p_TileY">Tile grid Y</param>
-        public NavTile(NavWorld p_World, string p_TileFileName, int p_TileX, int p_TileY)
+        public NavTile(NavWorld p_World, string p_TileFileName, int p_TileX, int p_TileY, bool p_IsMain)
         {
             World       = p_World;
             TilePath    = p_TileFileName;
             TileId      = World.BuildTileId(p_TileX, p_TileY);
+
+            m_IsMain = p_IsMain;
 
             bool l_NeedInit = false;
 
@@ -164,11 +170,12 @@ namespace Elara.Navigation
                                     var l_Connection = new NavNodeConnection();
                                     l_Connection.FromNode   = (UInt64)l_StreamReader.ReadInt64();
                                     l_Connection.ToNode     = (UInt64)l_StreamReader.ReadInt64();
-                                    l_Connection.Weight     = l_StreamReader.ReadSingle();
                                     l_Connection.Distance   = l_StreamReader.ReadSingle();
 
                                     Connections.Add(l_Connection);
-                                    World.GetNavGraph()?.RegisterConnection(l_Connection);
+
+                                    if (m_IsMain)
+                                        World.GetNavGraph()?.RegisterConnection(l_Connection);
                                 }
 
                                 SetDirty(true);
@@ -221,10 +228,10 @@ namespace Elara.Navigation
         /// <summary>
         /// Save the tile
         /// </summary>
-        public void Save()
+        public bool Save()
         {
             if (!m_Dirty)
-                return;
+                return false;
 
             if (File.Exists(TilePath))
                 File.Delete(TilePath);
@@ -234,7 +241,7 @@ namespace Elara.Navigation
                 if (Nodes.Count == 0)
                 {
                     m_Dirty = false;
-                    return;
+                    return false;
                 }
 
                 lock (Connections)
@@ -261,7 +268,6 @@ namespace Elara.Navigation
                         {
                             l_StreamWriter.Write((UInt64)l_Connection.FromNode);
                             l_StreamWriter.Write((UInt64)l_Connection.ToNode);
-                            l_StreamWriter.Write((float)l_Connection.Weight);
                             l_StreamWriter.Write((float)l_Connection.Distance);
                         }
 
@@ -271,6 +277,8 @@ namespace Elara.Navigation
             }
 
             m_Dirty = false;
+
+            return true;
         }
         /// <summary>
         /// Set this tile as dirty, need to be saved
@@ -336,9 +344,9 @@ namespace Elara.Navigation
             {
                 var l_Node = new NavNode();
 
-                l_Node.NodeId = GenerateNodeId();
+                l_Node.NodeId   = GenerateNodeId();
                 l_Node.Position = p_Unit.Position;
-                l_Node.Flags = NavNode.NavNodeFlags.Walkable;
+                l_Node.Flags    = NavNode.NavNodeFlags.Walkable;
 
                 if (p_Unit.IsFlying)
                     l_Node.Flags = NavNode.NavNodeFlags.Flying;
@@ -444,14 +452,15 @@ namespace Elara.Navigation
                     }
                 }
 
-                World.GetNavGraph()?.RegisterConnection(l_Connection);
+                if (m_IsMain)
+                    World.GetNavGraph()?.RegisterConnection(l_Connection);
             }
             /// From right node
             {
                 var l_Connection = new NavNodeConnection();
-                l_Connection.FromNode = p_Right.NodeId;
-                l_Connection.ToNode = p_Left.NodeId;
-                l_Connection.Distance = (float)p_Left.Position.Distance3D(p_Right.Position);
+                l_Connection.FromNode   = p_Right.NodeId;
+                l_Connection.ToNode     = p_Left.NodeId;
+                l_Connection.Distance   = (float)p_Left.Position.Distance3D(p_Right.Position);
 
                 if (p_Right.GetNodeIdHight() == TileId)
                 {
@@ -473,7 +482,8 @@ namespace Elara.Navigation
                     }
                 }
 
-                World.GetNavGraph()?.RegisterConnection(l_Connection);
+                if (m_IsMain)
+                    World.GetNavGraph()?.RegisterConnection(l_Connection);
             }
         }
 
@@ -525,7 +535,10 @@ namespace Elara.Navigation
         /// Draw this tile
         /// </summary>
         /// <param name="p_Renderer">Renderer instance</param>
-        public void Draw(Game.Overlay.Renderer p_Renderer)
+        /// <param name="p_RenderNodes">Draw nodes</param>
+        /// <param name="p_RenderTilesBox">Draw tiles boxs</param>
+        /// <param name="p_RenderConnections">Draw nodes connections</param>
+        public void Draw(Game.Overlay.Renderer p_Renderer, bool p_RenderNodes, bool p_RenderTilesBox, bool p_RenderConnections)
         {
             /// Rebuild draw cache if needed
             if (m_GraphicDirty)
@@ -539,12 +552,6 @@ namespace Elara.Navigation
                         return;
 
                     m_Boxes.Clear();
-
-                    float l_PositionX = (32 * Utils.MathUtil.GridSize) - (((float)Header.TileX + 1) * Utils.MathUtil.GridSize);
-                    float l_PositionY = (32 * Utils.MathUtil.GridSize) - (((float)Header.TileY + 1) * Utils.MathUtil.GridSize);
-
-                    /// Draw tile AABBOX
-                    m_Boxes.Add(BuildBox(new Utils.Vector3(l_PositionX, l_PositionY, -200f), Utils.MathUtil.GridSize, 400f, Color.White));
 
                     foreach (var l_Node in Nodes.Values)
                     {
@@ -618,7 +625,16 @@ namespace Elara.Navigation
                 }
             }
 
-            if (m_Boxes.Any())
+            if (p_RenderTilesBox)
+            {
+                float l_PositionX = (32 * Utils.MathUtil.GridSize) - (((float)Header.TileX + 1) * Utils.MathUtil.GridSize);
+                float l_PositionY = (32 * Utils.MathUtil.GridSize) - (((float)Header.TileY + 1) * Utils.MathUtil.GridSize);
+
+                /// Draw tile AABBOX
+                p_Renderer.DrawWorldBox(new Utils.Vector3(l_PositionX, l_PositionY, -200f), Utils.MathUtil.GridSize, 400f, Color.White);
+            }
+
+            if (p_RenderNodes && m_Boxes.Any())
             {
                 p_Renderer.SetDrawModeWorld();
                 
@@ -626,7 +642,7 @@ namespace Elara.Navigation
                     p_Renderer.DrawUserPrimitives(Game.Overlay.Renderer.PrimitiveTopology.LineStrip, l_Box.ToArray());
             }
 
-            if (m_ConnectionsLineVertices != null)
+            if (p_RenderConnections && m_ConnectionsLineVertices != null)
             {
                 p_Renderer.SetDrawModeWorld();
                 p_Renderer.DrawUserPrimitives(Game.Overlay.Renderer.PrimitiveTopology.LineList, m_ConnectionsLineVertices.ToArray());

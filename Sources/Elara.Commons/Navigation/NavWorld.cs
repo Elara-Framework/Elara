@@ -97,6 +97,106 @@ namespace Elara.Navigation
         ////////////////////////////////////////////////////////
 
         /// <summary>
+        /// Auto correct author name
+        /// </summary>
+        /// <param name="p_Name">Author name</param>
+        /// <returns></returns>
+        public string AutoCorrectAuthorName(string p_Name)
+        {
+            if (p_Name == null)
+                return null;
+
+            if (HasAuthor(p_Name))
+                return m_Authors.FirstOrDefault(x => x.ToLower() == p_Name.ToLower());
+            else
+            {
+                var l_List = GetAvailableAuthors();
+
+                return l_List.FirstOrDefault(x => x.ToLower() == p_Name.ToLower());
+            }
+        }
+
+        ////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// Has author
+        /// </summary>
+        /// <param name="p_Name">Author name</param>
+        /// <returns></returns>
+        public bool HasAuthor(string p_Name)
+        {
+            return m_Authors.Any(x => x.ToLower() == p_Name.ToLower());
+        }
+        /// <summary>
+        /// Author exist
+        /// </summary>
+        /// <param name="p_Name">Author name</param>
+        /// <returns></returns>
+        public bool AuthorExist(string p_Name)
+        {
+            var l_List = GetAvailableAuthors();
+
+            if (l_List.Any(x => x.ToLower() == p_Name.ToLower()))
+                return true;
+
+            return false;
+        }
+        /// <summary>
+        /// Create an author
+        /// </summary>
+        /// <param name="p_Name">Author name</param>
+        /// <returns></returns>
+        public bool CreateNewAuthor(string p_Name)
+        {
+            var l_List = GetAvailableAuthors();
+
+            if (l_List.Any(x => x.ToLower() == p_Name.ToLower()))
+                return false;
+
+            var l_Path = Path.Combine(m_NavigationDirectory, p_Name);
+
+            if (!Directory.Exists(l_Path))
+                Directory.CreateDirectory(l_Path);
+
+            l_Path = Path.Combine(l_Path, "Version.txt");
+
+            File.WriteAllText(l_Path, DateTime.Now.ToBinary().ToString());
+
+            return true;
+        }
+        /// <summary>
+        /// Clone author
+        /// </summary>
+        /// <param name="p_From">Author to clone</param>
+        /// <param name="p_To">New author name</param>
+        /// <returns></returns>
+        public bool CloneAuthor(string p_From, string p_To)
+        {
+            if (!AuthorExist(p_From))
+                return false;
+
+            if (AuthorExist(p_To))
+                return false;
+
+            var l_From = Path.Combine(m_NavigationDirectory, p_From);
+            var l_To   = Path.Combine(m_NavigationDirectory, p_To);
+
+            var l_DestFolder = new DirectoryInfo(l_To);
+            l_DestFolder.Create();
+
+            foreach (var l_SourceSubDirPath in Directory.EnumerateDirectories(l_From, "*", SearchOption.AllDirectories))
+                Directory.CreateDirectory(l_SourceSubDirPath.Replace(l_From, l_To));
+
+            foreach (var l_File in Directory.EnumerateFiles(l_From, "*", SearchOption.AllDirectories))
+                File.Copy(l_File, l_File.Replace(l_From, l_To), true);
+
+            l_To = Path.Combine(l_To, "Version.txt");
+
+            File.WriteAllText(l_To, DateTime.Now.ToBinary().ToString());
+
+            return true;
+        }
+        /// <summary>
         /// Add a new author
         /// </summary>
         /// <param name="p_Name">Author name</param>
@@ -109,18 +209,17 @@ namespace Elara.Navigation
                 return false;
 
             /// Check duplicates
-            if (m_Authors.Contains(p_Name))
+            if (HasAuthor(p_Name))
                 return false;
+
+            p_Name = AutoCorrectAuthorName(p_Name);
 
             /// Skip if the folder doesn't exist
             if (!Directory.Exists(Path.Combine(m_NavigationDirectory, p_Name)))
                 return false;
 
-            /// Add/Replace priority
-            if (m_AuthorsPriorities.ContainsKey(p_Name))
-                m_AuthorsPriorities[p_Name] = p_Priority;
-            else
-                m_AuthorsPriorities.Add(p_Name, p_Priority);
+            m_Authors.Add(p_Name);
+            m_AuthorsPriorities.Add(p_Name, p_Priority);
 
             /// Rebuild sorted authors list
             RebuildAuthors();
@@ -130,19 +229,44 @@ namespace Elara.Navigation
             return true;
         }
         /// <summary>
+        /// Remove author
+        /// </summary>
+        /// <param name="p_Name">Author name</param>
+        /// <returns></returns>
+        public bool RemoveAuthor(string p_Name)
+        {
+            p_Name = AutoCorrectAuthorName(p_Name);
+
+            if (!HasAuthor(p_Name))
+                return false;
+
+            m_Authors.Remove(p_Name);
+            m_AuthorsPriorities.Remove(p_Name);
+            RebuildAuthors();
+            OnMapChange(m_CurrentMapId, true);
+
+            return true;
+        }
+        /// <summary>
         /// Set editing author name
         /// </summary>
         /// <param name="p_Name">Author name</param>
-        public void SetEditingAuthor(string p_Name)
+        public bool SetEditingAuthor(string p_Name)
         {
+            p_Name = AutoCorrectAuthorName(p_Name);
+
             /// Don't change if it's the same
             if (m_EditingAuthor == p_Name)
-                return;
+                return false;
 
             m_EditingAuthor = p_Name;
+            m_EditingAuthorTiles.Clear();
 
             if (m_EditingAuthor == null)
-                return;
+            {
+                OnMapChange(m_CurrentMapId, true);
+                return true;
+            }
 
             /// Remove from authors if exist in it
             if (m_Authors.Contains(p_Name))
@@ -150,7 +274,6 @@ namespace Elara.Navigation
                 m_Authors.Remove(p_Name);
                 m_AuthorsPriorities.Remove(p_Name);
                 RebuildAuthors();
-                OnMapChange(m_CurrentMapId, true);
             }
 
             var l_Path = Path.Combine(m_NavigationDirectory, p_Name);
@@ -159,8 +282,45 @@ namespace Elara.Navigation
             if (!Directory.Exists(l_Path))
                 Directory.CreateDirectory(l_Path);
 
-            /// Clear old tiles
-            m_EditingAuthorTiles.Clear();
+            OnMapChange(m_CurrentMapId, true);
+
+            return true;
+        }
+
+        ////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// Reset all authors priority
+        /// </summary>
+        public void ResetAuthorsPriorities()
+        {
+            m_AuthorsPriorities.Clear();
+
+            foreach (var l_Current in m_Authors)
+                m_AuthorsPriorities.Add(l_Current, 0);
+
+            RebuildAuthors();
+            OnMapChange(m_CurrentMapId, true);
+        }
+        /// <summary>
+        /// Set author priority
+        /// </summary>
+        /// <param name="p_Name">Author name</param>
+        /// <param name="p_Priority">Author priority</param>
+        /// <returns></returns>
+        public bool SetAuthorPriority(string p_Name, int p_Priority)
+        {
+            p_Name = AutoCorrectAuthorName(p_Name);
+
+            if (!HasAuthor(p_Name))
+                return false;
+
+            m_AuthorsPriorities[p_Name] = p_Priority;
+
+            RebuildAuthors();
+            OnMapChange(m_CurrentMapId, true);
+
+            return true;
         }
         /// <summary>
         /// Rebuild sorted authors by priority list
@@ -171,6 +331,64 @@ namespace Elara.Navigation
 
             foreach (var l_Pair in m_AuthorsPriorities.OrderBy(x => x.Value))
                 m_SortedAuthors.Add(l_Pair.Key);
+        }
+
+        ////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// Get all available authors
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetAvailableAuthors()
+        {
+            return Directory.GetDirectories(m_NavigationDirectory).Select(x => new DirectoryInfo(x).Name).ToArray();
+        }
+        /// <summary>
+        /// Get editing author
+        /// </summary>
+        /// <returns></returns>
+        public string GetEditingAuthor()
+        {
+            return m_EditingAuthor != null ? m_EditingAuthor : "";
+        }
+        /// <summary>
+        /// Get author version
+        /// </summary>
+        /// <param name="p_Name">Author name</param>
+        /// <returns></returns>
+        public DateTime GetAuthorVersion(string p_Name)
+        {
+            var l_List = GetAvailableAuthors();
+
+            if (!l_List.Any(x => x.ToLower() == p_Name.ToLower()))
+                return DateTime.MinValue;
+
+            var l_Path = Path.Combine(m_NavigationDirectory, p_Name, "Version.txt");
+
+            if (!File.Exists(l_Path))
+                return DateTime.MinValue;
+
+            var l_Text = File.ReadAllText(l_Path);
+            long l_Date = 0;
+
+            if (!long.TryParse(l_Text, out l_Date))
+                return DateTime.MinValue;
+
+            return DateTime.FromBinary(l_Date);
+        }
+        /// <summary>
+        /// Get author priority
+        /// </summary>
+        /// <param name="p_Name">Author name</param>
+        /// <returns></returns>
+        public int GetAuthorPriority(string p_Name)
+        {
+            p_Name = AutoCorrectAuthorName(p_Name);
+
+            if (!HasAuthor(p_Name))
+                return -1;
+
+            return m_AuthorsPriorities[p_Name];
         }
 
         ////////////////////////////////////////////////////////
@@ -209,9 +427,9 @@ namespace Elara.Navigation
         {
             int l_TileId = BuildTileId(p_X, p_Y);
 
-            if (m_EditingAuthorTiles != null)
+            if (m_EditingAuthor != null)
             {
-                if (m_EditingAuthor == null)
+                if (m_EditingAuthorTiles == null)
                     return null;
 
                 NavTile l_Result = null;
@@ -321,9 +539,18 @@ namespace Elara.Navigation
         {
             if (m_EditingAuthor != null)
             {
+                bool l_SomethingSaved = false;
                 foreach (var l_Tile in m_EditingAuthorTiles.Values)
                 {
-                    l_Tile.Save();
+                    if (l_Tile.Save())
+                        l_SomethingSaved = true;
+                }
+
+                if (l_SomethingSaved)
+                {
+                    var l_FileName = Path.Combine(m_NavigationDirectory, m_EditingAuthor, "Version.txt");
+
+                    File.WriteAllText(l_FileName, DateTime.Now.ToBinary().ToString());
                 }
             }
         }
@@ -331,17 +558,20 @@ namespace Elara.Navigation
         /// Draw tiles
         /// </summary>
         /// <param name="p_Renderer">Rendered instance</param>
-        public void Draw(Game.Overlay.Renderer p_Renderer)
+        /// <param name="p_RenderNodes">Draw nodes</param>
+        /// <param name="p_RenderTilesBox">Draw tiles boxs</param>
+        /// <param name="p_RenderConnections">Draw nodes connections</param>
+        public void Draw(Game.Overlay.Renderer p_Renderer, bool p_RenderNodes, bool p_RenderTilesBox, bool p_RenderConnections)
         {
-            if (m_EditingAuthorTiles != null)
+            if (m_EditingAuthorTiles != null && m_EditingAuthorTiles.Count != 0)
             {
                 foreach (var l_Tile in m_EditingAuthorTiles.Values)
-                    l_Tile.Draw(p_Renderer);
+                    l_Tile.Draw(p_Renderer, p_RenderNodes, p_RenderTilesBox, p_RenderConnections);
             }
             else
             {
                 foreach (var l_Tiles in m_Tiles.Values)
-                    l_Tiles.FirstOrDefault()?.Draw(p_Renderer);
+                    l_Tiles.FirstOrDefault()?.Draw(p_Renderer, p_RenderNodes, p_RenderTilesBox, p_RenderConnections);
             }
         }
  
@@ -392,7 +622,11 @@ namespace Elara.Navigation
                             if (!m_Tiles.ContainsKey(l_TileId))
                                 m_Tiles.Add(l_TileId, new List<NavTile>());
 
-                            m_Tiles[l_TileId].Add(new NavTile(this, l_File.FullName, l_X, l_Y));
+                            bool l_IsMain = false;
+                            if (m_EditingAuthor == null && m_Tiles[l_TileId].Count == 0)
+                                l_IsMain = true;
+
+                            m_Tiles[l_TileId].Add(new NavTile(this, l_File.FullName, l_X, l_Y, l_IsMain));
                         }
                     }
                 }
@@ -423,7 +657,7 @@ namespace Elara.Navigation
                             lock (m_EditingAuthorTiles)
                             {
                                 if (!m_EditingAuthorTiles.ContainsKey(l_TileId))
-                                    m_EditingAuthorTiles[l_TileId] = new NavTile(this, l_File.FullName, l_X, l_Y);
+                                    m_EditingAuthorTiles[l_TileId] = new NavTile(this, l_File.FullName, l_X, l_Y, true);
                             }
                         }
                     }
@@ -460,16 +694,19 @@ namespace Elara.Navigation
             if (p_Force || l_TileId != m_CurrentTileId)
             {
                 m_CurrentTileId = l_TileId;
-
-                lock (m_EditingAuthorTiles)
+                
+                if (m_EditingAuthor != null)
                 {
-                    /// Create the new tile if the editing author doesn't have one
-                    if (!m_EditingAuthorTiles.ContainsKey(l_TileId))
+                    lock (m_EditingAuthorTiles)
                     {
-                        var l_FileName = string.Format("{0}_{1}.dat", p_X, p_Y);
-                        var l_TilePath = Path.Combine(m_NavigationDirectory, m_EditingAuthor, m_CurrentMapId.ToString(), l_FileName);
-                        
-                        m_EditingAuthorTiles.Add(l_TileId, new NavTile(this, l_TilePath, p_X, p_Y));
+                        /// Create the new tile if the editing author doesn't have one
+                        if (!m_EditingAuthorTiles.ContainsKey(l_TileId))
+                        {
+                            var l_FileName = string.Format("{0}_{1}.dat", p_X, p_Y);
+                            var l_TilePath = Path.Combine(m_NavigationDirectory, m_EditingAuthor, m_CurrentMapId.ToString(), l_FileName);
+
+                            m_EditingAuthorTiles.Add(l_TileId, new NavTile(this, l_TilePath, p_X, p_Y, true));
+                        }
                     }
                 }
             }
@@ -480,6 +717,9 @@ namespace Elara.Navigation
         /// <param name="p_Position">New player position</param>
         public void OnPlayerMove(Utils.Vector3 p_Position)
         {
+            if (m_EditingAuthor == null)
+                return;
+
             /// Check if the player is far enough to the last position
             if (m_LastPlayerPosition.Distance3D(p_Position) < NavTile.MIN_NODE_DISTANCE)
                 return;

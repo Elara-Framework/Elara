@@ -68,6 +68,9 @@ namespace Elara.AI.Controllers
             if (l_LocalPlayer == null || p_Unit == null)
                 return false;
 
+            if (l_LocalPlayer.TargetGuid == p_Unit.Guid)
+                return true;
+
             var l_Action = GetTargetingAction(p_Unit);
 
             if (l_Action == null)

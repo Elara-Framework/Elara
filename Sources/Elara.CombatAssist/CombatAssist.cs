@@ -28,6 +28,7 @@ namespace Elara.CombatAssist
             : base(p_Elara) { }
 
         private Thread m_PulseThread;
+        private SettingsManager m_SettingsManager;
         private UserControlCombatAssist m_Interface;
         
         public CombatAssistSettings Settings { get; private set; } = new CombatAssistSettings();
@@ -36,32 +37,46 @@ namespace Elara.CombatAssist
         public int LastTick { get; private set; } = 0;
 
         public override string Name => "Combat Assist";
+        public override string Category => "Tools";
         public override string Author => "Elara";
         public override UserControl Interface => m_Interface;
 
-        public override void OnLoad()
+        public override bool OnLoad()
         {
+            m_SettingsManager = new SettingsManager(Elara.Game.ObjectManager.LocalPlayer);
             m_Interface = new UserControlCombatAssist(this);
 
-            Elara.SettingsManager.OnLoadSettings += SettingsManager_OnLoadSettings;
+            Elara.Game.OnChangeActivePlayer += Game_OnChangeActivePlayer;
             LoadSettings();
+
+            return base.OnLoad();
         }
 
-        public override void OnUnload()
+        public override bool OnUnload()
         {
+            if (Running)
+                Stop();
+
+            Elara.Game.OnChangeActivePlayer -= Game_OnChangeActivePlayer;
             SaveSettings();
-            Elara.SettingsManager.OnLoadSettings -= SettingsManager_OnLoadSettings;
 
             if (m_Interface != null)
             {
                 m_Interface.Dispose();
                 m_Interface = null;
             }
+
+            return base.OnUnload();
         }
 
-        public override bool IsRunning => Running;
+        private void Game_OnChangeActivePlayer(Game p_Game, WowLocalPlayer p_LocalPlayer)
+        {
+            SaveSettings();
+            m_SettingsManager = new SettingsManager(p_LocalPlayer);
+            LoadSettings();
+        }
 
-        public override void Start()
+        public void Start()
         {
             if (!Running)
             {
@@ -81,7 +96,7 @@ namespace Elara.CombatAssist
             }
         }
 
-        public override void Stop()
+        public void Stop()
         {
             if (Running)
             {
@@ -100,15 +115,10 @@ namespace Elara.CombatAssist
             }
         }
 
-        private void SettingsManager_OnLoadSettings(SettingsManager p_SettingsManager)
-        {
-            LoadSettings();
-        }
-
         private void LoadSettings()
         {
             var l_Settings = new CombatAssistSettings();
-            Elara.SettingsManager.LoadSettingXml("CombatAssist", ref l_Settings);
+            m_SettingsManager.LoadSettingsXml("CombatAssist", ref l_Settings, true);
 
             this.Settings = l_Settings;
             m_Interface?.OnChangeSettings(this.Settings);
@@ -116,7 +126,7 @@ namespace Elara.CombatAssist
 
         private void SaveSettings()
         {
-            Elara.SettingsManager.SaveSettingXml("CombatAssist", this.Settings);
+            m_SettingsManager.SaveSettingsXml("CombatAssist", this.Settings, true);
         }
 
         private void Thread_Pulsator()

@@ -33,8 +33,11 @@ namespace Elara.BaseCombats
         private SpellInfo ShieldOfTheRighteous;
         private SpellInfo LightOfTheProtector;
         private SpellInfo HandOfTheProtector;
+        private SpellInfo LayOnHands;
+        private SpellInfo FlashOfLight;
 
         private UI.UserControlPaladin m_Interface;
+        private SettingsManager m_SettingsManager;
         public PaladinSettings CurrentSetting { get; private set; } = new PaladinSettings();
 
         public Paladin(Elara p_Elara)
@@ -50,54 +53,52 @@ namespace Elara.BaseCombats
 
         public override void OnLoad()
         {
-            Elara.SettingsManager.OnLoadSettings += SettingsManager_OnLoadSettings;
-            Elara.SettingsManager.OnSaveSettings += SettingsManager_OnSaveSettings;
+            m_SettingsManager       = new SettingsManager(Game.ObjectManager.LocalPlayer);
+            m_Interface             = new UI.UserControlPaladin(this);
 
-            m_Interface = new UI.UserControlPaladin(this);
-            LoadSettings(Elara.SettingsManager);
+            Judgment                = new SpellInfo(Game, 20271);
+            DivineStorm             = new SpellInfo(Game, 53385);
+            TemplarsVerdict         = new SpellInfo(Game, 85256);
+            BladeOfJustice          = new SpellInfo(Game, 184575);
+            CrusaderStrike          = new SpellInfo(Game, 35395);
+            Consecration            = new SpellInfo(Game, 26573);
+            AvengersShield          = new SpellInfo(Game, 31935);
+            ShieldOfTheRighteous    = new SpellInfo(Game, 53600);
+            LightOfTheProtector     = new SpellInfo(Game, 184092);
+            HandOfTheProtector      = new SpellInfo(Game, 213652);
+            BlessedHammers          = new SpellInfo(Game, 204019);
+            LayOnHands              = new SpellInfo(Game, 633);
+            FlashOfLight            = new SpellInfo(Game, 19750);
 
-            Judgment = new SpellInfo(Game, 20271);
-            DivineStorm = new SpellInfo(Game, 53385);
-            TemplarsVerdict = new SpellInfo(Game, 85256);
-            BladeOfJustice = new SpellInfo(Game, 184575);
-            CrusaderStrike = new SpellInfo(Game, 35395);
-            Consecration = new SpellInfo(Game, 26573);
-            AvengersShield = new SpellInfo(Game, 31935);
-            ShieldOfTheRighteous = new SpellInfo(Game, 53600);
-            LightOfTheProtector = new SpellInfo(Game, 184092);
-            HandOfTheProtector = new SpellInfo(Game, 213652);
-            BlessedHammers = new SpellInfo(Game, 204019);
+            Elara.Game.OnChangeActivePlayer += Game_OnChangeActivePlayer;
+            LoadSettings();
         }
 
         public override void OnUnload()
         {
-            Elara.SettingsManager.OnLoadSettings -= SettingsManager_OnLoadSettings;
-            Elara.SettingsManager.OnSaveSettings -= SettingsManager_OnSaveSettings;
-            SaveSettings(Elara.SettingsManager);
+            Elara.Game.OnChangeActivePlayer -= Game_OnChangeActivePlayer;
+            SaveSettings();
 
             m_Interface?.Dispose();
             m_Interface = null;
         }
 
-        private void SettingsManager_OnSaveSettings(SettingsManager p_SettingsManager)
+        private void Game_OnChangeActivePlayer(Game p_Game, WowLocalPlayer p_LocalPlayer)
         {
-            SaveSettings(p_SettingsManager);
+            SaveSettings();
+            m_SettingsManager = new SettingsManager(p_LocalPlayer);
+            LoadSettings();
         }
 
-        private void SettingsManager_OnLoadSettings(SettingsManager p_SettingsManager)
+        private void SaveSettings()
         {
-            LoadSettings(p_SettingsManager);
+            m_SettingsManager.SaveSettingsXml<PaladinSettings>("Paladin", CurrentSetting, true);
         }
 
-        private void SaveSettings(SettingsManager p_SettingsManager)
-        {
-            p_SettingsManager.SaveSettingXml<PaladinSettings>("Paladin", CurrentSetting);
-        }
-
-        private void LoadSettings(SettingsManager p_SettingsManager)
+        private void LoadSettings()
         {
             var l_Settings = new PaladinSettings();
-            p_SettingsManager.LoadSettingXml<PaladinSettings>("Paladin", ref l_Settings);
+            m_SettingsManager.LoadSettingsXml<PaladinSettings>("Paladin", ref l_Settings, true);
 
             CurrentSetting = l_Settings;
             m_Interface?.UpdateSettings(CurrentSetting);
@@ -145,57 +146,64 @@ namespace Elara.BaseCombats
                 var l_HostilesAroundTarget = CombatUtils.GetAttackersAroundPosition(this.Game, l_Target.Position, p_MaxRange: 8.0f);
                 var l_HostilesAroundPlayer = CombatUtils.GetAttackersAroundPosition(this.Game, l_LocalPlayer.Position, p_MaxRange: 8.0f);
 
-                if (l_LocalPlayer.HealthPercent <= 70 &&                                // Check player health
-                    l_SpellController.CanUseSpell(LightOfTheProtector, CheckRange: false))                 // Use SpellController generic conditions
+                if (l_LocalPlayer.HealthPercent <= 20 &&
+                    l_SpellController.CanUseSpell(LayOnHands))
+                {
+                    l_SpellController.UseSpell(LayOnHands);
+                    return;
+                }
+
+                if (l_LocalPlayer.HealthPercent <= 70 &&
+                    l_SpellController.CanUseSpell(LightOfTheProtector))
                 {
                     l_SpellController.UseSpell(LightOfTheProtector);
                     return;
                 }
 
-                if (l_LocalPlayer.HealthPercent <= 70 &&                                // Check player health
-                    l_SpellController.CanUseSpell(HandOfTheProtector, CheckRange: false))                 // Use SpellController generic conditions
+                if (l_LocalPlayer.HealthPercent <= 70 &&
+                    l_SpellController.CanUseSpell(HandOfTheProtector))
                 {
                     l_SpellController.UseSpell(HandOfTheProtector);
                     return;
                 }
 
-                if (l_LocalPlayer.HealthPercent <= 70 &&                                // Check player health
-                    l_SpellController.CanUseSpell(ShieldOfTheRighteous, CheckRange: false))                // Use SpellController generic conditions
+                if (l_LocalPlayer.HealthPercent <= 70 &&
+                    l_SpellController.CanUseSpell(ShieldOfTheRighteous))
                 {
                     l_SpellController.UseSpell(ShieldOfTheRighteous);
                     return;
                 }
 
-                /* TODO : Fix range detection */
-                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
-                    l_Target.DistanceTo(l_LocalPlayer) <= 30.0f &&
-                    l_SpellController.CanUseSpell(AvengersShield, l_Target, CheckRange: false))            // Use SpellController generic conditions
+                if (l_SpellController.CanUseSpell(AvengersShield, l_Target))
                 {
-                    l_SpellController.UseSpell(AvengersShield);
+                    l_SpellController.UseSpell(AvengersShield, l_Target);
+                    return;
+                }
+
+                if (l_LocalPlayer.HealthPercent <= 40 &&
+                    l_SpellController.CanUseSpell(FlashOfLight, l_LocalPlayer))
+                {
+                    l_SpellController.UseSpell(FlashOfLight, l_LocalPlayer);
                     return;
                 }
 
                 if (l_Target.DistanceTo(l_LocalPlayer) <= 5.0f &&
-                    l_LocalPlayer.CastingInfo == null &&                                // Not casting
-                    l_SpellController.CanUseSpell(Consecration, CheckRange: false))                        // Use SpellController generic conditions
+                    l_SpellController.CanUseSpell(Consecration))
                 {
                     l_SpellController.UseSpell(Consecration);
                     return;
                 }
 
-                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
-                    l_HostilesAroundPlayer.Count >= 2 &&
-                    l_SpellController.CanUseSpell(BlessedHammers, CheckRange: false))            // Use SpellController generic conditions
+                if (l_HostilesAroundPlayer.Count >= 2 &&
+                    l_SpellController.CanUseSpell(BlessedHammers))
                 {
                     l_SpellController.UseSpell(BlessedHammers);
                     return;
                 }
 
-                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
-                    l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
-                    l_SpellController.CanUseSpell(Judgment, l_Target))                  // Use SpellController generic conditions
+                if (l_SpellController.CanUseSpell(Judgment, l_Target))
                 {
-                    l_SpellController.UseSpell(Judgment);
+                    l_SpellController.UseSpell(Judgment, l_Target);
                     return;
                 }
             }
@@ -214,20 +222,31 @@ namespace Elara.BaseCombats
                 var l_HostilesAroundTarget = CombatUtils.GetAttackersAroundPosition(this.Game, l_Target.Position, p_MaxRange: 8.0f);
                 var l_HostilesAroundPlayer = CombatUtils.GetAttackersAroundPosition(this.Game, l_LocalPlayer.Position, p_MaxRange: 8.0f);
 
-                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
-                    l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
-                    l_SpellController.CanUseSpell(CrusaderStrike, l_Target))            // Use SpellController generic conditions
+                if (l_SpellController.CanUseSpell(CrusaderStrike, l_Target))  
                 {
                     l_SpellController.UseSpell(CrusaderStrike);
+                    return;
+                }
+
+                if (l_LocalPlayer.HealthPercent <= 20 &&
+                    l_SpellController.CanUseSpell(LayOnHands))
+                {
+                    l_SpellController.UseSpell(LayOnHands);
+                    return;
+                }
+
+                if (l_LocalPlayer.HealthPercent <= 40 &&
+                    l_SpellController.CanUseSpell(FlashOfLight, l_LocalPlayer))
+                {
+                    l_SpellController.UseSpell(FlashOfLight, l_LocalPlayer);
                     return;
                 }
 
                 /* AOE */
                 if (l_HostilesAroundPlayer.Count >= 2)
                 {
-                    if (l_LocalPlayer.CastingInfo == null &&                            // Not casting
-                        l_LocalPlayer.GetPower(WowUnit.UnitPower.HolyPower) >= 3 &&     // Check holy power
-                        l_SpellController.CanUseSpell(DivineStorm))                     // Use SpellController generic conditions
+                    if (l_LocalPlayer.GetPower(WowUnit.UnitPower.HolyPower) >= 3 &&
+                        l_SpellController.CanUseSpell(DivineStorm))
                     {
                         l_SpellController.UseSpell(DivineStorm);
                         return;
@@ -236,29 +255,24 @@ namespace Elara.BaseCombats
                 /* Single Target */
                 else
                 {
-                    if (l_LocalPlayer.CastingInfo == null &&                            // Not casting
-                        l_LocalPlayer.GetPower(WowUnit.UnitPower.HolyPower) >= 3 &&     // Check holy power
-                        l_SpellController.CanUseSpell(TemplarsVerdict, l_Target))       // Use SpellController generic conditions
+                    if (l_LocalPlayer.GetPower(WowUnit.UnitPower.HolyPower) >= 3 &&
+                        l_SpellController.CanUseSpell(TemplarsVerdict, l_Target))
                     {
                         l_SpellController.UseSpell(TemplarsVerdict);
                         return;
                     }
                 }
 
-                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
-                    l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
-                    l_SpellController.CanUseSpell(Judgment, l_Target))                  // Use SpellController generic conditions
+                if (l_SpellController.CanUseSpell(Judgment, l_Target))
                 {
-                    l_SpellController.UseSpell(Judgment);
+                    l_SpellController.UseSpell(Judgment, l_Target);
                     return;
                 }
 
-                if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
-                    l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
-                    l_LocalPlayer.GetPower(WowUnit.UnitPower.HolyPower) <= 3 &&         // Check holy power
-                    l_SpellController.CanUseSpell(BladeOfJustice, l_Target))            // Use SpellController generic conditions
+                if (l_LocalPlayer.GetPower(WowUnit.UnitPower.HolyPower) <= 3 &&
+                    l_SpellController.CanUseSpell(BladeOfJustice, l_Target))
                 {
-                    l_SpellController.UseSpell(BladeOfJustice);
+                    l_SpellController.UseSpell(BladeOfJustice, l_Target);
                     return;
                 }
             }

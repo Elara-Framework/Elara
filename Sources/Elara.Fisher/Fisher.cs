@@ -28,23 +28,29 @@ namespace Elara.Fisher
         public int LastTick { get; private set; } = 0;
 
         public override string Name => "Fisher";
+        public override string Category => "Bots";
         public override string Author => "Elara";
         public override UserControl Interface => m_Interface;
 
-        public override void OnLoad()
+        public override bool OnLoad()
         {
             m_Interface = new UserControlFisher(this);
+
+            return base.OnLoad();
         }
 
-        public override void OnUnload()
+        public override bool OnUnload()
         {
+            if (Running)
+                Stop();
+
             m_Interface?.Dispose();
             m_Interface = null;
+
+            return base.OnUnload();
         }
 
-        public override bool IsRunning => Running;
-
-        public override void Start()
+        public void Start()
         {
             if (!Running)
             {
@@ -57,7 +63,7 @@ namespace Elara.Fisher
             }
         }
 
-        public override void Stop()
+        public void Stop()
         {
             if (Running)
             {

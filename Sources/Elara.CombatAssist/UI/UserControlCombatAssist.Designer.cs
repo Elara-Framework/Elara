@@ -28,11 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.metroLabelAllowPullTarget = new MetroFramework.Controls.MetroLabel();
             this.metroToggleAllowPullTarget = new MetroFramework.Controls.MetroToggle();
             this.metroLabelAutoAcceptLFGInvite = new MetroFramework.Controls.MetroLabel();
             this.metroToggleAutoAcceptLFGInvite = new MetroFramework.Controls.MetroToggle();
+            this.metroButtonToggleCombatAssist = new MetroFramework.Controls.MetroButton();
+            this.timerRefreshUI = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -97,11 +100,31 @@
             this.metroToggleAutoAcceptLFGInvite.UseSelectable = true;
             this.metroToggleAutoAcceptLFGInvite.CheckedChanged += new System.EventHandler(this.metroToggleAutoAcceptLFGInvite_CheckedChanged);
             // 
+            // metroButtonToggleCombatAssist
+            // 
+            this.metroButtonToggleCombatAssist.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroButtonToggleCombatAssist.BackColor = System.Drawing.SystemColors.Control;
+            this.metroButtonToggleCombatAssist.Location = new System.Drawing.Point(3, 317);
+            this.metroButtonToggleCombatAssist.Name = "metroButtonToggleCombatAssist";
+            this.metroButtonToggleCombatAssist.Size = new System.Drawing.Size(694, 30);
+            this.metroButtonToggleCombatAssist.TabIndex = 15;
+            this.metroButtonToggleCombatAssist.Text = "Start combat assist";
+            this.metroButtonToggleCombatAssist.UseCustomForeColor = true;
+            this.metroButtonToggleCombatAssist.UseSelectable = true;
+            this.metroButtonToggleCombatAssist.Click += new System.EventHandler(this.metroButtonToggleCombatAssist_Click);
+            // 
+            // timerRefreshUI
+            // 
+            this.timerRefreshUI.Enabled = true;
+            this.timerRefreshUI.Tick += new System.EventHandler(this.timerRefreshUI_Tick);
+            // 
             // UserControlCombatAssist
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.Controls.Add(this.metroButtonToggleCombatAssist);
             this.Controls.Add(this.metroLabelAutoAcceptLFGInvite);
             this.Controls.Add(this.metroToggleAutoAcceptLFGInvite);
             this.Controls.Add(this.metroLabelAllowPullTarget);
@@ -122,5 +145,7 @@
         private MetroFramework.Controls.MetroToggle metroToggleAllowPullTarget;
         private MetroFramework.Controls.MetroLabel metroLabelAutoAcceptLFGInvite;
         private MetroFramework.Controls.MetroToggle metroToggleAutoAcceptLFGInvite;
+        private MetroFramework.Controls.MetroButton metroButtonToggleCombatAssist;
+        private System.Windows.Forms.Timer timerRefreshUI;
     }
 }

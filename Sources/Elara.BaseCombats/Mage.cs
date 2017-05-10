@@ -40,6 +40,7 @@ namespace Elara.BaseCombats
         private const int AURA_ICICLES                  = 205473;
 
         private UI.UserControlMage m_Interface;
+        private SettingsManager m_SettingsManager;
         public MageSettings CurrentSetting { get; private set; } = new MageSettings();
 
         public Mage(Elara p_Elara)
@@ -55,52 +56,48 @@ namespace Elara.BaseCombats
 
         public override void OnLoad()
         {
-            Elara.SettingsManager.OnLoadSettings += SettingsManager_OnLoadSettings;
-            Elara.SettingsManager.OnSaveSettings += SettingsManager_OnSaveSettings;
+            m_SettingsManager   = new SettingsManager(Game.ObjectManager.LocalPlayer);
+            m_Interface         = new UI.UserControlMage(this);
 
-            m_Interface     = new UI.UserControlMage(this);
-            LoadSettings(Elara.SettingsManager);
+            RuneOfPower         = new SpellInfo(Game, 116011);
+            RayOfFrost          = new SpellInfo(Game, 205021);
+            IceLance            = new SpellInfo(Game, 30455);
+            Flurry              = new SpellInfo(Game, 44614);
+            FrozenOrb           = new SpellInfo(Game, 84714);
+            FrostBolt           = new SpellInfo(Game, 116);
+            FrostBomb           = new SpellInfo(Game, 112948);
+            GlacialSpike        = new SpellInfo(Game, 199786);
+            Blizzard            = new SpellInfo(Game, 190356);
 
-            RuneOfPower     = new SpellInfo(Game, 116011);
-            RayOfFrost      = new SpellInfo(Game, 205021);
-            IceLance        = new SpellInfo(Game, 30455);
-            Flurry          = new SpellInfo(Game, 44614);
-            FrozenOrb       = new SpellInfo(Game, 84714);
-            FrostBolt       = new SpellInfo(Game, 116);
-            FrostBomb       = new SpellInfo(Game, 112948);
-            GlacialSpike    = new SpellInfo(Game, 199786);
-            Blizzard        = new SpellInfo(Game, 190356);
+            Elara.Game.OnChangeActivePlayer += Game_OnChangeActivePlayer;
+            LoadSettings();
+        }
+
+        private void Game_OnChangeActivePlayer(Game p_Game, WowLocalPlayer p_LocalPlayer)
+        {
+            SaveSettings();
+            m_SettingsManager = new SettingsManager(p_LocalPlayer);
+            LoadSettings();
         }
 
         public override void OnUnload()
         {
-            Elara.SettingsManager.OnLoadSettings -= SettingsManager_OnLoadSettings;
-            Elara.SettingsManager.OnSaveSettings -= SettingsManager_OnSaveSettings;
-            SaveSettings(Elara.SettingsManager);
+            Elara.Game.OnChangeActivePlayer -= Game_OnChangeActivePlayer;
+            SaveSettings();
 
             m_Interface?.Dispose();
             m_Interface = null;
         }
 
-        private void SettingsManager_OnSaveSettings(SettingsManager p_SettingsManager)
+        private void SaveSettings()
         {
-            SaveSettings(p_SettingsManager);
+            m_SettingsManager.SaveSettingsXml<MageSettings>("Mage", CurrentSetting, true);
         }
 
-        private void SettingsManager_OnLoadSettings(SettingsManager p_SettingsManager)
-        {
-            LoadSettings(p_SettingsManager);
-        }
-
-        private void SaveSettings(SettingsManager p_SettingsManager)
-        {
-            p_SettingsManager.SaveSettingXml<MageSettings>("Mage", CurrentSetting);
-        }
-
-        private void LoadSettings(SettingsManager p_SettingsManager)
+        private void LoadSettings()
         {
             var l_Settings = new MageSettings();
-            p_SettingsManager.LoadSettingXml<MageSettings>("Mage", ref l_Settings);
+            m_SettingsManager.LoadSettingsXml<MageSettings>("Mage", ref l_Settings, true);
 
             CurrentSetting = l_Settings;
             m_Interface?.UpdateSettings(CurrentSetting);

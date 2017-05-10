@@ -16,6 +16,7 @@ namespace Elara.WoW
         private readonly SpellMiscRecord SpellMiscRecord;
         private readonly SpellRangeRecord SpellRangeRecord;
         private readonly SpellCategoryRecord SpellChargeCategory;
+        private readonly List<SpellCastingRequirementsRecord> SpellCastingRequirements = new List<SpellCastingRequirementsRecord>();
         public readonly Game GameOwner;
         public readonly int SpellId;
 
@@ -28,6 +29,7 @@ namespace Elara.WoW
             this.SpellChargeCategory = this.SpellCategoriesRecord?.ChargeCategory;
             this.SpellMiscRecord = this.SpellRecord?.SpellMisc;
             this.SpellRangeRecord = this.SpellMiscRecord?.SpellRange;
+            this.SpellCastingRequirements = p_Game.Database.SpellCastingRequirements.Records.Where(x => x.SpellId == p_SpellId).ToList();
         }
 
         public override string ToString() => string.Format("[{0}] {1}", SpellId, Name);
@@ -70,13 +72,29 @@ namespace Elara.WoW
             return SpellMiscRecord?.CheckSpellAttribute(p_Attribute, GameOwner.ObjectManager.LocalPlayer?.InstanceDifficultyId ?? 0) ?? false;
         }
 
+        public bool IsInRange(Objects.WowUnit p_Target)
+        {
+            if (!HasRange)
+                return true;
+
+            var l_LocalPlayer = GameOwner.ObjectManager.LocalPlayer;
+
+            if (l_LocalPlayer == null)
+                return false;
+
+            if (p_Target == null || p_Target.Guid == l_LocalPlayer.Guid)
+                return true;
+
+            return p_Target.CombatDistanceTo(l_LocalPlayer) <= MaxRangeHostile;
+        }
+
         public bool RequireTargetFacingCaster => CheckSpellAttribute(SpellMiscRecord.SpellAttributes.REQ_TARGET_FACING_CASTER);
 
         public bool RequireCasterBehingTarget => CheckSpellAttribute(SpellMiscRecord.SpellAttributes.REQ_CASTER_BEHIND_TARGET);
 
-        public bool IsTalent => CheckSpellAttribute(SpellMiscRecord.SpellAttributes.IS_TALENT);
+        public bool RequireFacingTarget => SpellCastingRequirements.Any(x => x.FacingCasterFlags != 0);
 
-        public bool HasChargeMechanic => CheckSpellAttribute(SpellMiscRecord.SpellAttributes.CHARGE);
+        public bool IsTalent => CheckSpellAttribute(SpellMiscRecord.SpellAttributes.IS_TALENT);
 
         public bool DontBreakStealth => CheckSpellAttribute(SpellMiscRecord.SpellAttributes.DONT_BREAK_STEALTH);
 
