@@ -1,4 +1,4 @@
-﻿using Elara.Navigation;
+using Elara.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,12 +95,10 @@ namespace Elara.AI.Controllers
             if (p_World != null)
             {
                 World = p_World;
-                Query = new NavQuery(World.GetNavGraph());
             }
             else
             {
                 World = null;
-                Query = null;
             }
         }
 
@@ -161,7 +159,7 @@ namespace Elara.AI.Controllers
         public List<NavNode> GetPath(Utils.Vector3 p_Position)
         {
             var l_LocalPlayer = Owner.ObjectManager.LocalPlayer;
-            if (World == null || Query == null || l_LocalPlayer == null)
+            if (World == null || l_LocalPlayer == null)
                 return null;
 
             var l_IncludeMAsk = GetIncludeMask();
@@ -178,8 +176,10 @@ namespace Elara.AI.Controllers
             var l_Settings = new Navigation.NavQuerySettings();
             l_Settings.IncludeMask = l_IncludeMAsk;
 
+            var l_Query = new NavQuery(World.GetNavGraph());
+
             List<NavNode> l_Path;
-            if (Query.SearchForPath(l_StartNode, l_EndNode, out l_Path, l_Settings))
+            if (l_Query.SearchForPath(l_StartNode, l_EndNode, out l_Path, l_Settings))
             {
                
                 return l_Path;
@@ -205,7 +205,7 @@ namespace Elara.AI.Controllers
             var l_MoveController = MoveController;
             var l_RunningPath = RunningPath;
 
-            if (l_MoveController == null || World == null || Query == null || l_LocalPlayer == null)
+            if (l_MoveController == null || World == null || l_LocalPlayer == null)
                 return TreeSharp.RunStatus.Failure;
 
             var l_PlayerPosition = l_LocalPlayer.Position;
