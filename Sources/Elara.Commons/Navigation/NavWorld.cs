@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -25,7 +25,7 @@ namespace Elara.Navigation
         string m_NavigationDirectory;
 
         ////////////////////////////////////////////////////////
-        
+
         /// <summary>
         /// Loaded authors
         /// </summary>
@@ -481,8 +481,8 @@ namespace Elara.Navigation
         /// <returns>Found node or null</returns>
         public NavNode FindNearestNode(Utils.Vector3 p_PlayerPosition, NavNode.NavNodeFlags p_IncludeMask = NavNode.NavNodeFlags.Walkable, float p_MaxRange = 100.0f)
         {
-            int l_TileX, l_TileY;
-            TileIdToXY(m_CurrentTileId, out l_TileX, out l_TileY);
+            int l_TileX = p_PlayerPosition.TileX;
+            int l_TileY = p_PlayerPosition.TileY;
 
             List<NavNode> l_Nodes = new List<NavNode>();
 
@@ -574,7 +574,7 @@ namespace Elara.Navigation
                     l_Tiles.FirstOrDefault()?.Draw(p_Renderer, p_RenderNodes, p_RenderTilesBox, p_RenderConnections);
             }
         }
- 
+
         ////////////////////////////////////////////////////////
 
         /// <summary>
@@ -694,7 +694,7 @@ namespace Elara.Navigation
             if (p_Force || l_TileId != m_CurrentTileId)
             {
                 m_CurrentTileId = l_TileId;
-                
+
                 if (m_EditingAuthor != null)
                 {
                     lock (m_EditingAuthorTiles)
