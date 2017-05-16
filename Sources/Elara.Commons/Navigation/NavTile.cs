@@ -1,4 +1,4 @@
-﻿using Elara.WoW.Objects;
+using Elara.WoW.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -332,11 +332,18 @@ namespace Elara.Navigation
         public void AddNodeFromUnit(WowUnit p_Unit)
         {
             bool l_ShouldAdd = false;
+            NavNode.NavNodeFlags l_Flags = NavNode.NavNodeFlags.Walkable;
+
+            if (p_Unit.IsFlying)
+                l_Flags = NavNode.NavNodeFlags.Flying;
+
+            if (p_Unit.IsSwimming)
+                l_Flags = NavNode.NavNodeFlags.Swimming;
 
             lock (Nodes)
             {
                 /// Check if we should add the node
-                if (!Nodes.Any(x => x.Value.Position.Distance3D(p_Unit.Position) < (MIN_NODE_DISTANCE * 1.1)))
+                if (World.FindNearestNode(p_Unit.Position, l_Flags, (float)(MIN_NODE_DISTANCE * 1.1)) == null)
                     l_ShouldAdd = true;
             }
 
@@ -346,13 +353,7 @@ namespace Elara.Navigation
 
                 l_Node.NodeId   = GenerateNodeId();
                 l_Node.Position = p_Unit.Position;
-                l_Node.Flags    = NavNode.NavNodeFlags.Walkable;
-
-                if (p_Unit.IsFlying)
-                    l_Node.Flags = NavNode.NavNodeFlags.Flying;
-
-                if (p_Unit.IsSwimming)
-                    l_Node.Flags = NavNode.NavNodeFlags.Swimming;
+                l_Node.Flags    = l_Flags;
 
                 lock (Nodes)
                 {
@@ -410,7 +411,7 @@ namespace Elara.Navigation
                         continue;
 
                     double l_Dist = l_Node.Position.Distance3D(p_Node.Position);
-                
+
                     if (l_Dist <= CONNECTION_DIST)
                     {
                         p_Tile.ConnectNode(p_Node, l_Node);
@@ -556,7 +557,7 @@ namespace Elara.Navigation
                     foreach (var l_Node in Nodes.Values)
                     {
                         var l_Color = Color.Black;
-                        
+
                         if (l_Node.Flags.HasFlag(NavNode.NavNodeFlags.Walkable))
                             l_Color = Color.White;
                         else if (l_Node.Flags.HasFlag(NavNode.NavNodeFlags.Flying))
@@ -569,7 +570,7 @@ namespace Elara.Navigation
                         m_Boxes.Add(BuildBox(new Utils.Vector3(l_Node.Position.X - 0.25f, l_Node.Position.Y - 0.25f, l_Node.Position.Z),
                             0.5f, 0.5f, l_Color));
                     }
-                
+
                     if (Connections.Count != 0)
                     {
                         lock (Connections)
@@ -637,7 +638,7 @@ namespace Elara.Navigation
             if (p_RenderNodes && m_Boxes.Any())
             {
                 p_Renderer.SetDrawModeWorld();
-                
+
                 foreach (var l_Box in m_Boxes)
                     p_Renderer.DrawUserPrimitives(Game.Overlay.Renderer.PrimitiveTopology.LineStrip, l_Box.ToArray());
             }
