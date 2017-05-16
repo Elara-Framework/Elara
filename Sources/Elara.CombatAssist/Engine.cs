@@ -70,6 +70,7 @@ namespace Elara.CombatAssist
                     {
                         var l_Target = this.Target;
 
+
                         if (l_Target != null && l_Target.Health > 0 && !l_Target.IsNotAttackable)
                         {
                             if (this.OwnerCombatAssist.Settings.AllowPullTarget || LocalPlayer.IsIncombat)

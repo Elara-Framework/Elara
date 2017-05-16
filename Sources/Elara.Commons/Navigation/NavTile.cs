@@ -336,7 +336,7 @@ namespace Elara.Navigation
             lock (Nodes)
             {
                 /// Check if we should add the node
-                if (!Nodes.Any(x => x.Value.Position.Distance3D(p_Unit.Position) < MIN_NODE_DISTANCE))
+                if (!Nodes.Any(x => x.Value.Position.Distance3D(p_Unit.Position) < (MIN_NODE_DISTANCE * 1.1)))
                     l_ShouldAdd = true;
             }
 

@@ -91,7 +91,7 @@
             this.metroPanel1.HorizontalScrollbarSize = 10;
             this.metroPanel1.Location = new System.Drawing.Point(3, 42);
             this.metroPanel1.Name = "metroPanel1";
-            this.metroPanel1.Size = new System.Drawing.Size(159, 287);
+            this.metroPanel1.Size = new System.Drawing.Size(159, 284);
             this.metroPanel1.TabIndex = 0;
             this.metroPanel1.VerticalScrollbar = true;
             this.metroPanel1.VerticalScrollbarBarColor = true;
@@ -102,7 +102,7 @@
             // 
             this.SaveNavigationButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.SaveNavigationButton.Location = new System.Drawing.Point(3, 244);
+            this.SaveNavigationButton.Location = new System.Drawing.Point(3, 241);
             this.SaveNavigationButton.Name = "SaveNavigationButton";
             this.SaveNavigationButton.Size = new System.Drawing.Size(153, 40);
             this.SaveNavigationButton.TabIndex = 8;
@@ -189,7 +189,7 @@
             this.metroLabel2.FontWeight = MetroFramework.MetroLabelWeight.Regular;
             this.metroLabel2.Location = new System.Drawing.Point(3, 9);
             this.metroLabel2.Name = "metroLabel2";
-            this.metroLabel2.Size = new System.Drawing.Size(695, 28);
+            this.metroLabel2.Size = new System.Drawing.Size(690, 28);
             this.metroLabel2.TabIndex = 1;
             this.metroLabel2.Text = "Navigation Studio";
             this.metroLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -218,9 +218,9 @@
             this.metroPanel2.HorizontalScrollbarBarColor = true;
             this.metroPanel2.HorizontalScrollbarHighlightOnWheel = false;
             this.metroPanel2.HorizontalScrollbarSize = 10;
-            this.metroPanel2.Location = new System.Drawing.Point(168, 251);
+            this.metroPanel2.Location = new System.Drawing.Point(168, 248);
             this.metroPanel2.Name = "metroPanel2";
-            this.metroPanel2.Size = new System.Drawing.Size(371, 78);
+            this.metroPanel2.Size = new System.Drawing.Size(366, 78);
             this.metroPanel2.TabIndex = 2;
             this.metroPanel2.VerticalScrollbarBarColor = true;
             this.metroPanel2.VerticalScrollbarHighlightOnWheel = false;
@@ -439,7 +439,7 @@
             this.metroLabel3.FontWeight = MetroFramework.MetroLabelWeight.Bold;
             this.metroLabel3.Location = new System.Drawing.Point(3, 3);
             this.metroLabel3.Name = "metroLabel3";
-            this.metroLabel3.Size = new System.Drawing.Size(365, 19);
+            this.metroLabel3.Size = new System.Drawing.Size(360, 19);
             this.metroLabel3.TabIndex = 4;
             this.metroLabel3.Text = "Informations";
             this.metroLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -459,9 +459,9 @@
             this.metroPanel3.HorizontalScrollbarBarColor = true;
             this.metroPanel3.HorizontalScrollbarHighlightOnWheel = false;
             this.metroPanel3.HorizontalScrollbarSize = 10;
-            this.metroPanel3.Location = new System.Drawing.Point(545, 42);
+            this.metroPanel3.Location = new System.Drawing.Point(540, 42);
             this.metroPanel3.Name = "metroPanel3";
-            this.metroPanel3.Size = new System.Drawing.Size(153, 286);
+            this.metroPanel3.Size = new System.Drawing.Size(153, 283);
             this.metroPanel3.TabIndex = 3;
             this.metroPanel3.VerticalScrollbarBarColor = true;
             this.metroPanel3.VerticalScrollbarHighlightOnWheel = false;
@@ -582,7 +582,7 @@
             this.metroPanel4.HorizontalScrollbarSize = 10;
             this.metroPanel4.Location = new System.Drawing.Point(168, 42);
             this.metroPanel4.Name = "metroPanel4";
-            this.metroPanel4.Size = new System.Drawing.Size(371, 203);
+            this.metroPanel4.Size = new System.Drawing.Size(366, 200);
             this.metroPanel4.TabIndex = 4;
             this.metroPanel4.VerticalScrollbarBarColor = true;
             this.metroPanel4.VerticalScrollbarHighlightOnWheel = false;
@@ -621,7 +621,7 @@
             this.SourceGridView.ShowCellToolTips = false;
             this.SourceGridView.ShowEditingIcon = false;
             this.SourceGridView.ShowRowErrors = false;
-            this.SourceGridView.Size = new System.Drawing.Size(371, 203);
+            this.SourceGridView.Size = new System.Drawing.Size(366, 200);
             this.SourceGridView.TabIndex = 3;
             // 
             // Column3
@@ -681,7 +681,7 @@
             this.Controls.Add(this.metroLabel2);
             this.Controls.Add(this.metroPanel1);
             this.Name = "UserControlStudio";
-            this.Size = new System.Drawing.Size(701, 342);
+            this.Size = new System.Drawing.Size(696, 339);
             this.UseCustomBackColor = true;
             this.UseCustomForeColor = true;
             this.Load += new System.EventHandler(this.UserControlStudio_Load);

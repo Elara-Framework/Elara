@@ -244,7 +244,19 @@ namespace Elara.BaseCombats
 
         private void Combat_NoSpec(PlayerController p_PlayerController)
         {
-            Elara.Logger.WriteLine("Mage", "Error : No specialization is not supported (yet) !");
+            var l_SpellController = p_PlayerController.SpellController;
+            var l_LocalPlayer = p_PlayerController.LocalPlayer;
+            var l_Target = l_LocalPlayer?.Target;
+
+
+            if (l_LocalPlayer.CastingInfo == null &&                                // Not casting
+                l_LocalPlayer.IsMoving == false &&                                  // Not moving
+                l_LocalPlayer.IsFacingHeading(l_Target, 1.5f) &&                    // Check target facing
+                l_SpellController.CanUseSpell(FrostBolt, l_Target))                 // Use SpellController generic conditions
+            {
+                l_SpellController.UseSpell(FrostBolt);
+                return;
+            }
         }
     }
 }

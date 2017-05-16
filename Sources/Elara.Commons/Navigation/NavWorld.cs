@@ -721,7 +721,7 @@ namespace Elara.Navigation
                 return;
 
             /// Check if the player is far enough to the last position
-            if (m_LastPlayerPosition.Distance3D(p_Position) < NavTile.MIN_NODE_DISTANCE)
+            if (m_LastPlayerPosition.Distance3D(p_Position) < (NavTile.MIN_NODE_DISTANCE / 4.0f))
                 return;
 
             m_LastPlayerPosition = p_Position;

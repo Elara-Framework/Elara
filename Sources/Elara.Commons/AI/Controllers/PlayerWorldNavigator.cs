@@ -1,4 +1,4 @@
-using Elara.Navigation;
+﻿using Elara.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,16 +22,21 @@ namespace Elara.AI.Controllers
         public bool Running { get; private set; } = false;
         public List<NavNode> RunningPath { get; private set; } = null;
         public NavNode DestinationNode { get; private set; } = null;
+        public WoW.Companions.MountCompanion Mount { get; private set; } = null;
         public bool Arrived { get; private set; } = false;
         public bool AllowFlying { get; set; } = true;
         public bool AllowSwimming { get; set; } = true;
         public bool DisplayPath { get; set; } = true;
+        public bool UseMount { get; set; } = true;
 
         public PlayerWorldNavigator(PlayerController p_Owner)
         {
             Owner = p_Owner;
 
             p_Owner.GameOwner.OnRenderOverlay += GameOwner_OnRenderOverlay;
+            p_Owner.GameOwner.OnChangeActivePlayer += GameOwner_OnChangeActivePlayer;
+
+            UpdateMount();
         }
 
         ~PlayerWorldNavigator()
@@ -43,10 +48,37 @@ namespace Elara.AI.Controllers
         {
             if (!m_IsDisposed)
             {
+                Owner.GameOwner.OnChangeActivePlayer -= GameOwner_OnChangeActivePlayer;
                 Owner.GameOwner.OnRenderOverlay -= GameOwner_OnRenderOverlay;
 
                 m_IsDisposed = true;
             }
+        }
+
+        private void UpdateMount()
+        {
+            Mount = null;
+
+            var l_Mounts = Owner.GameOwner.Companions.GetMounts().Where(x => x.ActionBarSlot != null)
+                .OrderBy(x => !x.IsGroundMount)
+                .OrderBy(x => !x.IsFlyingMount)
+                .OrderBy(x => !x.IsScalingMount).ToList();
+
+            Mount = l_Mounts.FirstOrDefault(x => x.IsGroundMount || x.IsFlyingMount || x.IsScalingMount);
+
+            if (Mount != null)
+            {
+                Owner.GameOwner.Logger.WriteLine("PlayerWorldNavigator", "Using mount : " + Mount.Name);
+            }
+            else
+            {
+                Owner.GameOwner.Logger.WriteLine("PlayerWorldNavigator", "Warning : No valid mount found on action bar !");
+            }
+        }
+
+        private void GameOwner_OnChangeActivePlayer(Game p_Game, WoW.Objects.WowLocalPlayer p_LocalPlayer)
+        {
+            UpdateMount();
         }
 
         private void GameOwner_OnRenderOverlay(Game.Overlay p_Overlay, Game.Overlay.Renderer p_Renderer)
@@ -108,7 +140,16 @@ namespace Elara.AI.Controllers
 
             if (p_StopDistance < 2.0f)
                 p_StopDistance = 2.0f;
-            
+
+            if (l_LocalPlayer?.Position.Distance3D(p_Position) <= p_StopDistance)
+            {
+                DestinationPosition = p_Position;
+                DestinationMapId = p_MapId;
+                Arrived = true;
+                Running = false;
+                return true;
+            }
+
             StopDistance = p_StopDistance;
             RunningPath = GetPath(p_Position);
 
@@ -225,6 +266,16 @@ namespace Elara.AI.Controllers
                 return TreeSharp.RunStatus.Success;
             }
 
+            if (l_LocalPlayer.CastingInfo != null)
+                return TreeSharp.RunStatus.Running;
+            
+            if (UseMount && !l_LocalPlayer.IsMounted && !l_LocalPlayer.IsIncombat && Mount?.CanUseNow == true)
+            {
+                l_MoveController.StopMove();
+                Owner.GameOwner.Logger.WriteLine("PlayerWorldNavigator", "Use mount : " + Mount.Name);
+                Mount?.Use();
+                return TreeSharp.RunStatus.Running;
+            }
 
             NavNode l_NextNode = null;
             Utils.Vector3 l_NextPosition = DestinationPosition;
