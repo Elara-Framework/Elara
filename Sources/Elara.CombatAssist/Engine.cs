@@ -42,17 +42,14 @@ namespace Elara.CombatAssist
 
         RunStatus AcceptLFGInviteAction(object ctx)
         {
-            var l_Frame = GameOwner.GetFrameByName<SimpleFrame>("LFGDungeonReadyDialogEnterDungeonButton");
-            if (l_Frame?.IsVisible == true)
+            var l_Button = GameOwner.GetFrameByName("LFGDungeonReadyDialogEnterDungeonButton") as SimpleButton;
+            if (l_Button?.IsVisible == true)
             {
                 GameOwner.Logger.WriteLine("Combat Assist", "Accepting LFG invitation ...");
                 GameOwner.BringWindowForeground();
                 Thread.Sleep(1000); // Just in case you have 90's computer (I'm sorry for you)
 
-                using (var l_LockedCursor = GameOwner.ActiveMouseController.LockCursor(l_Frame.Center))
-                {
-                    l_LockedCursor.Click(MouseButtons.Left);
-                }
+                l_Button.Click(MouseButtons.Left);
                 return RunStatus.Success;
             }
             return RunStatus.Failure;
@@ -62,7 +59,7 @@ namespace Elara.CombatAssist
         {
             return new PrioritySelector(
                 new Decorator(ret => OwnerCombatAssist.Settings.AutoAcceptLFGInvite &&
-                                     GameOwner.GetFrameByName<SimpleFrame>("LFGDungeonReadyDialogEnterDungeonButton")?.IsVisible == true,
+                                     GameOwner.GetFrameByName("LFGDungeonReadyDialogEnterDungeonButton")?.IsVisible == true,
                     new Action(AcceptLFGInviteAction)
                 ),
                 new Decorator(ret => OwnerCombatAssist.Elara.CombatScript != null,

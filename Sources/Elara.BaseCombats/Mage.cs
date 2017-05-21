@@ -52,6 +52,8 @@ namespace Elara.BaseCombats
 
         public override string Author => "Elara";
 
+        public override float CombatRange => 28.0f;
+
         public override UserControl Interface => m_Interface;
 
         public override void OnLoad()
