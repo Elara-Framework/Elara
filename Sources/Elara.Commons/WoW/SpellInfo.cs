@@ -29,7 +29,7 @@ namespace Elara.WoW
             this.SpellChargeCategory = this.SpellCategoriesRecord?.ChargeCategory;
             this.SpellMiscRecord = this.SpellRecord?.SpellMisc;
             this.SpellRangeRecord = this.SpellMiscRecord?.SpellRange;
-            this.SpellCastingRequirements = p_Game.Database.SpellCastingRequirements.Records.Where(x => x.SpellId == p_SpellId).ToList();
+            this.SpellCastingRequirements = p_Game.Database.SpellCastingRequirements.Records.Values.Where(x => x.SpellId == p_SpellId).ToList();
         }
 
         public override string ToString() => string.Format("[{0}] {1}", SpellId, Name);

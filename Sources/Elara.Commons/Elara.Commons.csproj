@@ -85,6 +85,10 @@
     <Compile Include="TreeSharp\UntilFailure.cs" />
     <Compile Include="TreeSharp\UntilSuccess.cs" />
     <Compile Include="TreeSharp\Wait.cs" />
+    <Compile Include="WoW\Frames\GossipFrame.cs" />
+    <Compile Include="WoW\Frames\MerchantFrame.cs" />
+    <Compile Include="WoW\Frames\QuestFrame.cs" />
+    <Compile Include="WoW\QuestInfoWrapper.cs" />
     <Compile Include="WoW\SpellInfo.cs" />
   </ItemGroup>
   <ItemGroup>

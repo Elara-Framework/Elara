@@ -20,8 +20,7 @@ namespace Elara.AI.Controllers
         public int DestinationMapId { get; private set; } = -1;
         public Utils.Vector3 DestinationPosition { get; private set; } = Utils.Vector3.Zero;
         public bool Running { get; private set; } = false;
-        public List<NavNode> RunningPath { get; private set; } = null;
-        public NavNode DestinationNode { get; private set; } = null;
+        public List<Utils.Vector3> RunningPath { get; private set; } = null;
         public WoW.Companions.MountCompanion Mount { get; private set; } = null;
         public bool Arrived { get; private set; } = false;
         public bool AllowFlying { get; set; } = true;
@@ -95,7 +94,7 @@ namespace Elara.AI.Controllers
                     {
                         foreach (var l_Node in l_RunningPath)
                         {
-                            var l_BoxPos = new Utils.Vector3(l_Node.Position.X - 0.50f, l_Node.Position.Y - 0.50f, l_Node.Position.Z);
+                            var l_BoxPos = new Utils.Vector3(l_Node.X - 0.50f, l_Node.Y - 0.50f, l_Node.Z);
                             p_Renderer.DrawWorldBox(l_BoxPos, 1.0f, 1.0f, System.Drawing.Color.Green);
                         }
                     }
@@ -134,6 +133,22 @@ namespace Elara.AI.Controllers
             }
         }
 
+        public void SetPath(int p_MapId, Utils.Vector3[] p_Path, float p_StopDistance)
+        {
+            if (p_Path.Length == 0)
+                return;
+
+            if (p_StopDistance < 2.0f)
+                p_StopDistance = 2.0f;
+
+            StopDistance = p_StopDistance;
+            RunningPath = p_Path.ToList();
+            DestinationPosition = p_Path.Last();
+            DestinationMapId = p_MapId;
+            Arrived = false;
+            Running = true;
+        }
+
         public bool SetDestination(int p_MapId, Utils.Vector3 p_Position, float p_StopDistance = 3.0f, bool p_Force = false)
         {
             var l_LocalPlayer = Owner.ObjectManager.LocalPlayer;
@@ -151,7 +166,7 @@ namespace Elara.AI.Controllers
             }
 
             StopDistance = p_StopDistance;
-            RunningPath = GetPath(p_Position);
+            RunningPath = GetPath(p_Position).Select(x => x.Position).ToList();
 
             if (RunningPath != null || p_Force)
             {
@@ -174,7 +189,9 @@ namespace Elara.AI.Controllers
             if (Running)
             {
                 MoveController?.StopMove();
-                Running = false;
+                RunningPath         = null;
+                Running             = false;
+                Arrived             = true;
             }
         }
 
@@ -276,26 +293,19 @@ namespace Elara.AI.Controllers
                 Mount?.Use();
                 return TreeSharp.RunStatus.Running;
             }
-
-            NavNode l_NextNode = null;
+            
             Utils.Vector3 l_NextPosition = DestinationPosition;
 
             if (l_RunningPath != null && l_RunningPath.Any())
             {
                 lock (l_RunningPath)
                 {
-                    while (true)
+                    while (l_RunningPath.Count > 0)
                     {
-                        l_NextNode = l_RunningPath.FirstOrDefault();
+                        l_NextPosition = l_RunningPath.FirstOrDefault();
 
-                        if (l_NextNode == null)
+                        if (l_NextPosition.Distance3D(l_PlayerPosition) > l_DistanceCheck)
                             break;
-
-                        if (l_NextNode.Position.Distance3D(l_PlayerPosition) > l_DistanceCheck)
-                        {
-                            l_NextPosition = l_NextNode.Position;
-                            break;
-                        }
                         else
                             l_RunningPath.RemoveAt(0);
                     }
