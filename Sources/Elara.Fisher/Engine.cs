@@ -83,7 +83,7 @@ namespace Elara.Fisher
 
             protected override RunStatus Run(object context)
             {
-                if (m_Engine.PlayerController.SpellController.UseSpell(new SpellInfo(m_Engine.GameOwner, FISHING_SPELL_ID)))
+                if (m_Engine.PlayerController.SpellController.UseSpell(new WoW.Helpers.SpellInfo(m_Engine.GameOwner, FISHING_SPELL_ID)))
                 {
                     Thread.Sleep(1000);
                     return RunStatus.Success;

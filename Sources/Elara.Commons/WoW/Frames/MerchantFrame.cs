@@ -33,7 +33,7 @@ namespace Elara.WoW.Frames
 
             if (l_Button != null &&
                 l_Button.IsVisible &&
-                l_Button.State == FrameScript.SimpleButton.ButtonState.Normal)
+                l_Button.State == WowSimpleButtonState.Normal)
             {
                 return l_Button.Click(System.Windows.Forms.MouseButtons.Left);
             }
@@ -44,9 +44,9 @@ namespace Elara.WoW.Frames
         public bool Close()
         {
             var l_MerchantFrameCloseButton = m_Game.GetFrameByName("MerchantFrameCloseButton") as FrameScript.SimpleButton;
-            if (l_MerchantFrameCloseButton?.IsVisible == true && l_MerchantFrameCloseButton?.State == FrameScript.SimpleButton.ButtonState.Normal)
+            if (l_MerchantFrameCloseButton?.IsVisible == true && l_MerchantFrameCloseButton?.State == WowSimpleButtonState.Normal)
             {
-                while (l_MerchantFrameCloseButton.IsVisible && l_MerchantFrameCloseButton.State != FrameScript.SimpleButton.ButtonState.Disabled)
+                while (l_MerchantFrameCloseButton.IsVisible && l_MerchantFrameCloseButton.State != WowSimpleButtonState.Disabled)
                 {
                     if (!l_MerchantFrameCloseButton.Click(System.Windows.Forms.MouseButtons.Left))
                     {

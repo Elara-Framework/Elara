@@ -139,13 +139,13 @@ namespace Elara.AI.Controllers
             {
                 var l_MovementFlags = l_LocalPlayer.Movement.Flags;
 
-                if ((l_MovementFlags & WoW.Objects.MovementShared.MovementFlags.Backward) != 0)
+                if ((l_MovementFlags & WoW.WowMovementFlags.MOVEMENTFLAG_BACKWARD) != 0)
                 {
                     MovebackwardStart();
                     MoveBackwardStop();
                 }
 
-                if ((l_MovementFlags & WoW.Objects.MovementShared.MovementFlags.Forward) != 0)
+                if ((l_MovementFlags & WoW.WowMovementFlags.MOVEMENTFLAG_FORWARD) != 0)
                 {
                     MoveForwardStart();
                     MoveForwardStop();
@@ -182,7 +182,7 @@ namespace Elara.AI.Controllers
                 l_Directions.TryGetValue(MathUtil.Directions.PitchUp, out l_PitchUpAngle);
                 l_Directions.TryGetValue(MathUtil.Directions.PitchDown, out l_PitchDownAngle);
 
-                if ((l_LocalPlayer.Movement.Flags & WoW.Objects.MovementShared.MovementFlags.Forward) != 0 &&
+                if ((l_LocalPlayer.Movement.Flags & WoW.WowMovementFlags.MOVEMENTFLAG_FORWARD) != 0 &&
                     l_LocalPlayer.Position.Distance3D(p_Position) <= 3.0f ||
                     (l_LeftAngle > 1.0f || l_RightAngle > 1.0f) ||
                     (l_HandlePitch && (l_PitchDownAngle > 1.0f || l_PitchUpAngle > 1.0f)))

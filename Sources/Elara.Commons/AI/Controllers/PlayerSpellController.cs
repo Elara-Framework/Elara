@@ -20,7 +20,7 @@ namespace Elara.AI.Controllers
             Owner = p_Owner;
         }
 
-        public bool CanUseSpell(SpellInfo p_Spell, 
+        public bool CanUseSpell(WoW.Helpers.SpellInfo p_Spell, 
             WoW.Objects.WowUnit Target = null,
             bool CheckCooldown = true,
             bool CheckGlobalCooldown = true,
@@ -61,7 +61,7 @@ namespace Elara.AI.Controllers
             return true;
         }
 
-        public bool UseSpell(SpellInfo p_Spell, WowUnit p_Unit = null)
+        public bool UseSpell(WoW.Helpers.SpellInfo p_Spell, WowUnit p_Unit = null)
         {
             var l_LocalPlayer = Owner.LocalPlayer;
 
@@ -107,7 +107,7 @@ namespace Elara.AI.Controllers
             return l_Result;
         }
 
-        public bool UseSpell(SpellInfo p_Spell, Vector3 p_Position)
+        public bool UseSpell(WoW.Helpers.SpellInfo p_Spell, Vector3 p_Position)
         {
             var l_KeyBind = GetKeyBindBySpell(p_Spell);
 
@@ -126,11 +126,11 @@ namespace Elara.AI.Controllers
             return false;
         }
 
-        private ActionBar.ActionBarSlot GetKeyBindBySpell(SpellInfo p_Spell)
+        private ActionBar.ActionBarSlot GetKeyBindBySpell(WoW.Helpers.SpellInfo p_Spell)
         {
             return Owner.GameOwner.ActionBar.GetActiveSlots().FirstOrDefault(x =>
                 x.Filled && 
-                x.Type == ActionBar.ActionBarSlot.SlotFlags.Spell && 
+                x.Type == WowActionButtonType.Spell && 
                 x.SpellId == p_Spell.SpellId && 
                 x.CanPress);
         }

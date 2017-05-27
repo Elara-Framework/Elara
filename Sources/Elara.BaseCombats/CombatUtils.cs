@@ -21,7 +21,7 @@ namespace Elara.BaseCombats
             return p_Game.ObjectManager.GetObjectsOfType<WowUnit>(false).Where(x =>
                 x.IsAlive &&
                 x.Position.Distance3D(p_Position) <= p_MaxRange &&
-                x.GetThreatSituation(l_LocalPlayer) > WowUnit.UnitThreatSituation.None).ToList();
+                x.GetThreatSituation(l_LocalPlayer) > WoW.WowUnitThreatSituation.None).ToList();
         }
 
         public static WowPlayer GetPartyMemberWithLowestHealth(Game p_Game, bool p_IncludeSelf = true)

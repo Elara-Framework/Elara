@@ -47,7 +47,7 @@ namespace Elara.WoW.Frames
             return false;
         }
 
-        public bool SelectOptionByType(GossipInfo.GossipOption.GossipOptionTypes p_Type)
+        public bool SelectOptionByType(WowGossipOptionType p_Type)
         {
             var l_Option = Options.FirstOrDefault(x => x.Type == p_Type);
 

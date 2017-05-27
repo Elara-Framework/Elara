@@ -22,19 +22,19 @@ namespace Elara.BaseCombats
             
         }
 
-        private SpellInfo Judgment;
-        private SpellInfo DivineStorm;
-        private SpellInfo TemplarsVerdict;
-        private SpellInfo BladeOfJustice;
-        private SpellInfo CrusaderStrike;
-        private SpellInfo Consecration;
-        private SpellInfo AvengersShield;
-        private SpellInfo BlessedHammers;
-        private SpellInfo ShieldOfTheRighteous;
-        private SpellInfo LightOfTheProtector;
-        private SpellInfo HandOfTheProtector;
-        private SpellInfo LayOnHands;
-        private SpellInfo FlashOfLight;
+        private WoW.Helpers.SpellInfo Judgment;
+        private WoW.Helpers.SpellInfo DivineStorm;
+        private WoW.Helpers.SpellInfo TemplarsVerdict;
+        private WoW.Helpers.SpellInfo BladeOfJustice;
+        private WoW.Helpers.SpellInfo CrusaderStrike;
+        private WoW.Helpers.SpellInfo Consecration;
+        private WoW.Helpers.SpellInfo AvengersShield;
+        private WoW.Helpers.SpellInfo BlessedHammers;
+        private WoW.Helpers.SpellInfo ShieldOfTheRighteous;
+        private WoW.Helpers.SpellInfo LightOfTheProtector;
+        private WoW.Helpers.SpellInfo HandOfTheProtector;
+        private WoW.Helpers.SpellInfo LayOnHands;
+        private WoW.Helpers.SpellInfo FlashOfLight;
 
         private UI.UserControlPaladin m_Interface;
         private SettingsManager m_SettingsManager;
@@ -58,19 +58,19 @@ namespace Elara.BaseCombats
             m_SettingsManager       = new SettingsManager(Game.ObjectManager.LocalPlayer);
             m_Interface             = new UI.UserControlPaladin(this);
 
-            Judgment                = new SpellInfo(Game, 20271);
-            DivineStorm             = new SpellInfo(Game, 53385);
-            TemplarsVerdict         = new SpellInfo(Game, 85256);
-            BladeOfJustice          = new SpellInfo(Game, 184575);
-            CrusaderStrike          = new SpellInfo(Game, 35395);
-            Consecration            = new SpellInfo(Game, 26573);
-            AvengersShield          = new SpellInfo(Game, 31935);
-            ShieldOfTheRighteous    = new SpellInfo(Game, 53600);
-            LightOfTheProtector     = new SpellInfo(Game, 184092);
-            HandOfTheProtector      = new SpellInfo(Game, 213652);
-            BlessedHammers          = new SpellInfo(Game, 204019);
-            LayOnHands              = new SpellInfo(Game, 633);
-            FlashOfLight            = new SpellInfo(Game, 19750);
+            Judgment                = new WoW.Helpers.SpellInfo(Game, 20271);
+            DivineStorm             = new WoW.Helpers.SpellInfo(Game, 53385);
+            TemplarsVerdict         = new WoW.Helpers.SpellInfo(Game, 85256);
+            BladeOfJustice          = new WoW.Helpers.SpellInfo(Game, 184575);
+            CrusaderStrike          = new WoW.Helpers.SpellInfo(Game, 35395);
+            Consecration            = new WoW.Helpers.SpellInfo(Game, 26573);
+            AvengersShield          = new WoW.Helpers.SpellInfo(Game, 31935);
+            ShieldOfTheRighteous    = new WoW.Helpers.SpellInfo(Game, 53600);
+            LightOfTheProtector     = new WoW.Helpers.SpellInfo(Game, 184092);
+            HandOfTheProtector      = new WoW.Helpers.SpellInfo(Game, 213652);
+            BlessedHammers          = new WoW.Helpers.SpellInfo(Game, 204019);
+            LayOnHands              = new WoW.Helpers.SpellInfo(Game, 633);
+            FlashOfLight            = new WoW.Helpers.SpellInfo(Game, 19750);
 
             Elara.Game.OnChangeActivePlayer += Game_OnChangeActivePlayer;
             LoadSettings();
@@ -115,13 +115,13 @@ namespace Elara.BaseCombats
         {
             switch (p_PlayerController.LocalPlayer.Specialization)
             {
-                case WowPlayer.PlayerSpecializations.PaladinHoly:
+                case WowTalentSpecialization.TALENT_SPEC_PALADIN_HOLY:
                     Combat_Holy(p_PlayerController);
                     break;
-                case WowPlayer.PlayerSpecializations.PaladinProtection:
+                case WowTalentSpecialization.TALENT_SPEC_PALADIN_PROTECTION:
                     Combat_Protection(p_PlayerController);
                     break;
-                case WowPlayer.PlayerSpecializations.PaladinRetribution:
+                case WowTalentSpecialization.TALENT_SPEC_PALADIN_RETRIBUTION:
                     Combat_Retribution(p_PlayerController);
                     break;
                 default:
@@ -247,7 +247,7 @@ namespace Elara.BaseCombats
                 /* AOE */
                 if (l_HostilesAroundPlayer.Count >= 2)
                 {
-                    if (l_LocalPlayer.GetPower(WowUnit.UnitPower.HolyPower) >= 3 &&
+                    if (l_LocalPlayer.GetPower(WowUnitPower.HolyPower) >= 3 &&
                         l_SpellController.CanUseSpell(DivineStorm))
                     {
                         l_SpellController.UseSpell(DivineStorm);
@@ -257,7 +257,7 @@ namespace Elara.BaseCombats
                 /* Single Target */
                 else
                 {
-                    if (l_LocalPlayer.GetPower(WowUnit.UnitPower.HolyPower) >= 3 &&
+                    if (l_LocalPlayer.GetPower(WowUnitPower.HolyPower) >= 3 &&
                         l_SpellController.CanUseSpell(TemplarsVerdict, l_Target))
                     {
                         l_SpellController.UseSpell(TemplarsVerdict);
@@ -271,7 +271,7 @@ namespace Elara.BaseCombats
                     return;
                 }
 
-                if (l_LocalPlayer.GetPower(WowUnit.UnitPower.HolyPower) <= 3 &&
+                if (l_LocalPlayer.GetPower(WowUnitPower.HolyPower) <= 3 &&
                     l_SpellController.CanUseSpell(BladeOfJustice, l_Target))
                 {
                     l_SpellController.UseSpell(BladeOfJustice, l_Target);

@@ -23,15 +23,15 @@ namespace Elara.BaseCombats
             public bool UseBlizzard = false;
         }
 
-        private SpellInfo RuneOfPower;
-        private SpellInfo RayOfFrost;
-        private SpellInfo Flurry;
-        private SpellInfo IceLance;
-        private SpellInfo FrozenOrb;
-        private SpellInfo FrostBolt;
-        private SpellInfo FrostBomb;
-        private SpellInfo GlacialSpike;
-        private SpellInfo Blizzard;
+        private WoW.Helpers.SpellInfo RuneOfPower;
+        private WoW.Helpers.SpellInfo RayOfFrost;
+        private WoW.Helpers.SpellInfo Flurry;
+        private WoW.Helpers.SpellInfo IceLance;
+        private WoW.Helpers.SpellInfo FrozenOrb;
+        private WoW.Helpers.SpellInfo FrostBolt;
+        private WoW.Helpers.SpellInfo FrostBomb;
+        private WoW.Helpers.SpellInfo GlacialSpike;
+        private WoW.Helpers.SpellInfo Blizzard;
 
         private const int AURA_FINGERS_OF_FROST         = 44544;
         private const int AURA_FROSTBOMB                = 112948;
@@ -61,15 +61,15 @@ namespace Elara.BaseCombats
             m_SettingsManager   = new SettingsManager(Game.ObjectManager.LocalPlayer);
             m_Interface         = new UI.UserControlMage(this);
 
-            RuneOfPower         = new SpellInfo(Game, 116011);
-            RayOfFrost          = new SpellInfo(Game, 205021);
-            IceLance            = new SpellInfo(Game, 30455);
-            Flurry              = new SpellInfo(Game, 44614);
-            FrozenOrb           = new SpellInfo(Game, 84714);
-            FrostBolt           = new SpellInfo(Game, 116);
-            FrostBomb           = new SpellInfo(Game, 112948);
-            GlacialSpike        = new SpellInfo(Game, 199786);
-            Blizzard            = new SpellInfo(Game, 190356);
+            RuneOfPower         = new WoW.Helpers.SpellInfo(Game, 116011);
+            RayOfFrost          = new WoW.Helpers.SpellInfo(Game, 205021);
+            IceLance            = new WoW.Helpers.SpellInfo(Game, 30455);
+            Flurry              = new WoW.Helpers.SpellInfo(Game, 44614);
+            FrozenOrb           = new WoW.Helpers.SpellInfo(Game, 84714);
+            FrostBolt           = new WoW.Helpers.SpellInfo(Game, 116);
+            FrostBomb           = new WoW.Helpers.SpellInfo(Game, 112948);
+            GlacialSpike        = new WoW.Helpers.SpellInfo(Game, 199786);
+            Blizzard            = new WoW.Helpers.SpellInfo(Game, 190356);
 
             Elara.Game.OnChangeActivePlayer += Game_OnChangeActivePlayer;
             LoadSettings();
@@ -114,13 +114,13 @@ namespace Elara.BaseCombats
         {
             switch (p_PlayerController.LocalPlayer.Specialization)
             {
-                case WowPlayer.PlayerSpecializations.MageFrost:
+                case WowTalentSpecialization.TALENT_SPEC_MAGE_FROST:
                     Combat_Frost(p_PlayerController);
                     break;
-                case WowPlayer.PlayerSpecializations.MageFire:
+                case WowTalentSpecialization.TALENT_SPEC_MAGE_FIRE:
                     Combat_Fire(p_PlayerController);
                     break;
-                case WowPlayer.PlayerSpecializations.MageArcane:
+                case WowTalentSpecialization.TALENT_SPEC_MAGE_ARCANE:
                     Combat_Arcane(p_PlayerController);
                     break;
                 default:

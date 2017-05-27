@@ -273,10 +273,10 @@ namespace Elara.AI.Controllers
             if (DestinationMapId == l_LocalPlayer.CurrentMapId && 
                 DestinationPosition.Distance3D(l_PlayerPosition) <= StopDistance)
             {
-                if ((l_LocalPlayer.Movement.Flags & WoW.Objects.MovementShared.MovementFlags.Forward) != 0)
+                if ((l_LocalPlayer.Movement.Flags & WoW.WowMovementFlags.MOVEMENTFLAG_FORWARD) != 0)
                     l_MoveController.MoveForwardStop();
 
-                if ((l_LocalPlayer.Movement.Flags & WoW.Objects.MovementShared.MovementFlags.Backward) != 0)
+                if ((l_LocalPlayer.Movement.Flags & WoW.WowMovementFlags.MOVEMENTFLAG_BACKWARD) != 0)
                     l_MoveController.MoveBackwardStop();
 
                 Arrived = true;

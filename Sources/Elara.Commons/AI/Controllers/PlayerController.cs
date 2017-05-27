@@ -91,7 +91,7 @@ namespace Elara.AI.Controllers
 
             if (l_OpenBagButton == null ||
                 l_OpenBagButton.IsVisible == false ||
-                l_OpenBagButton.State != SimpleButton.ButtonState.Normal)
+                l_OpenBagButton.State != WowSimpleButtonState.Normal)
                 return null;
 
             if (l_OpenBagButton.Click(System.Windows.Forms.MouseButtons.Left))

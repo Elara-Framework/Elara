@@ -30,9 +30,9 @@ namespace Elara.WoW.Frames
         public bool Close()
         {
             var l_QuestFrameCloseButton = m_Game.GetFrameByName("QuestFrameCloseButton") as FrameScript.SimpleButton;
-            if (l_QuestFrameCloseButton?.IsVisible == true && l_QuestFrameCloseButton?.State == FrameScript.SimpleButton.ButtonState.Normal)
+            if (l_QuestFrameCloseButton?.IsVisible == true && l_QuestFrameCloseButton?.State == WowSimpleButtonState.Normal)
             {
-                while (l_QuestFrameCloseButton.IsVisible && l_QuestFrameCloseButton.State != FrameScript.SimpleButton.ButtonState.Disabled)
+                while (l_QuestFrameCloseButton.IsVisible && l_QuestFrameCloseButton.State != WowSimpleButtonState.Disabled)
                 {
                     if (!l_QuestFrameCloseButton.Click(System.Windows.Forms.MouseButtons.Left))
                     {
@@ -50,9 +50,9 @@ namespace Elara.WoW.Frames
         public bool CompleteQuest(int p_RewardItemId = 0)
         {
             var l_QuestFrameCompleteButton = m_Game.GetFrameByName("QuestFrameCompleteButton") as FrameScript.SimpleButton;
-            if (l_QuestFrameCompleteButton?.IsVisible == true && l_QuestFrameCompleteButton?.State == FrameScript.SimpleButton.ButtonState.Normal)
+            if (l_QuestFrameCompleteButton?.IsVisible == true && l_QuestFrameCompleteButton?.State == WowSimpleButtonState.Normal)
             {
-                while (l_QuestFrameCompleteButton.IsVisible && l_QuestFrameCompleteButton.State != FrameScript.SimpleButton.ButtonState.Disabled)
+                while (l_QuestFrameCompleteButton.IsVisible && l_QuestFrameCompleteButton.State != WowSimpleButtonState.Disabled)
                 {
                     if (!l_QuestFrameCompleteButton.Click(System.Windows.Forms.MouseButtons.Left))
                     {
@@ -64,9 +64,9 @@ namespace Elara.WoW.Frames
             }
 
             var l_QuestFrameGoodbyeButton = m_Game.GetFrameByName("QuestFrameGoodbyeButton") as FrameScript.SimpleButton;
-            if (l_QuestFrameGoodbyeButton?.IsVisible == true && l_QuestFrameGoodbyeButton?.State == FrameScript.SimpleButton.ButtonState.Normal)
+            if (l_QuestFrameGoodbyeButton?.IsVisible == true && l_QuestFrameGoodbyeButton?.State == WowSimpleButtonState.Normal)
             {
-                while (l_QuestFrameGoodbyeButton.IsVisible && l_QuestFrameGoodbyeButton.State != FrameScript.SimpleButton.ButtonState.Disabled)
+                while (l_QuestFrameGoodbyeButton.IsVisible && l_QuestFrameGoodbyeButton.State != WowSimpleButtonState.Disabled)
                 {
                     if (!l_QuestFrameGoodbyeButton.Click(System.Windows.Forms.MouseButtons.Left))
                     {
@@ -78,9 +78,9 @@ namespace Elara.WoW.Frames
             }
 
             var l_QuestFrameCompleteQuestButton = m_Game.GetFrameByName("QuestFrameCompleteQuestButton") as FrameScript.SimpleButton;
-            if (l_QuestFrameCompleteQuestButton?.IsVisible == true && l_QuestFrameCompleteQuestButton?.State == FrameScript.SimpleButton.ButtonState.Normal)
+            if (l_QuestFrameCompleteQuestButton?.IsVisible == true && l_QuestFrameCompleteQuestButton?.State == WowSimpleButtonState.Normal)
             {
-                while (l_QuestFrameCompleteQuestButton.IsVisible && l_QuestFrameCompleteQuestButton.State != FrameScript.SimpleButton.ButtonState.Disabled)
+                while (l_QuestFrameCompleteQuestButton.IsVisible && l_QuestFrameCompleteQuestButton.State != WowSimpleButtonState.Disabled)
                 {
                     if (!l_QuestFrameCompleteQuestButton.Click(System.Windows.Forms.MouseButtons.Left))
                     {
@@ -97,9 +97,9 @@ namespace Elara.WoW.Frames
         public bool AcceptQuest()
         {
             var l_QuestFrameAcceptButton = m_Game.GetFrameByName("QuestFrameAcceptButton") as FrameScript.SimpleButton;
-            if (l_QuestFrameAcceptButton?.IsVisible == true && l_QuestFrameAcceptButton?.State == FrameScript.SimpleButton.ButtonState.Normal)
+            if (l_QuestFrameAcceptButton?.IsVisible == true && l_QuestFrameAcceptButton?.State == WowSimpleButtonState.Normal)
             {
-                while (l_QuestFrameAcceptButton.IsVisible && l_QuestFrameAcceptButton.State != FrameScript.SimpleButton.ButtonState.Disabled)
+                while (l_QuestFrameAcceptButton.IsVisible && l_QuestFrameAcceptButton.State != WowSimpleButtonState.Disabled)
                 {
                     if (!l_QuestFrameAcceptButton.Click(System.Windows.Forms.MouseButtons.Left))
                     {
@@ -118,9 +118,9 @@ namespace Elara.WoW.Frames
         public bool DeclineQuest()
         {
             var l_QuestFrameDeclineButton = m_Game.GetFrameByName("QuestFrameDeclineButton") as FrameScript.SimpleButton;
-            if (l_QuestFrameDeclineButton?.IsVisible == true && l_QuestFrameDeclineButton?.State == FrameScript.SimpleButton.ButtonState.Normal)
+            if (l_QuestFrameDeclineButton?.IsVisible == true && l_QuestFrameDeclineButton?.State == WowSimpleButtonState.Normal)
             {
-                while (l_QuestFrameDeclineButton.IsVisible && l_QuestFrameDeclineButton.State != FrameScript.SimpleButton.ButtonState.Disabled)
+                while (l_QuestFrameDeclineButton.IsVisible && l_QuestFrameDeclineButton.State != WowSimpleButtonState.Disabled)
                 {
                     if (!l_QuestFrameDeclineButton.Click(System.Windows.Forms.MouseButtons.Left))
                     {

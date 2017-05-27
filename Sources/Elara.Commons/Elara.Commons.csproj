@@ -88,8 +88,9 @@
     <Compile Include="WoW\Frames\GossipFrame.cs" />
     <Compile Include="WoW\Frames\MerchantFrame.cs" />
     <Compile Include="WoW\Frames\QuestFrame.cs" />
-    <Compile Include="WoW\QuestInfoWrapper.cs" />
-    <Compile Include="WoW\SpellInfo.cs" />
+    <Compile Include="WoW\Helpers\ItemInfo.cs" />
+    <Compile Include="WoW\Helpers\QuestInfo.cs" />
+    <Compile Include="WoW\Helpers\SpellInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
