@@ -24,23 +24,23 @@ namespace Elara.BaseCombats
                 x.GetThreatSituation(l_LocalPlayer) > WoW.WowUnitThreatSituation.None).ToList();
         }
 
-        public static WowPlayer GetPartyMemberWithLowestHealth(Game p_Game, bool p_IncludeSelf = true)
+        public static WowUnit GetPartyMemberWithLowestHealth(Game p_Game, bool p_IncludeSelf = true)
         {
-            var l_Players = new List<WowPlayer>();
+            var l_Units = new List<WowUnit>();
             var l_LocalPlayer = p_Game.ObjectManager.LocalPlayer;
             var l_PartyMembers = p_Game.PartyInfo.GetActiveParty()?.PartyMembers;
 
             if (p_IncludeSelf && l_LocalPlayer?.IsAlive == true)
             {
-                l_Players.Add(l_LocalPlayer);
+                l_Units.Add(l_LocalPlayer);
             }
 
             if (l_PartyMembers != null)
             {
-                l_Players.AddRange(l_PartyMembers.Where(x => x.Player?.IsAlive == true).Select(x => x.Player));
+                l_Units.AddRange(l_PartyMembers.Where(x => x.Unit?.IsAlive == true).Select(x => x.Unit));
             }
 
-            return l_Players.OrderBy(x => x.HealthPercent).FirstOrDefault();
+            return l_Units.OrderBy(x => x.HealthPercent).FirstOrDefault();
         }
 
     }
