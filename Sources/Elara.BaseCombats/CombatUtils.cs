@@ -28,7 +28,7 @@ namespace Elara.BaseCombats
         {
             var l_Players = new List<WowPlayer>();
             var l_LocalPlayer = p_Game.ObjectManager.LocalPlayer;
-            var l_PartyMembers = p_Game.PartyInfo.GetActiveParty()?.Members;
+            var l_PartyMembers = p_Game.PartyInfo.GetActiveParty()?.PartyMembers;
 
             if (p_IncludeSelf && l_LocalPlayer?.IsAlive == true)
             {
