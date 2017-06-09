@@ -65,17 +65,14 @@ namespace Elara.CombatAssist
                 new Decorator(ret => OwnerCombatAssist.Elara.CombatScript != null,
                     new Action(delegate(object context)
                     {
+                        OwnerCombatAssist.Elara.CombatScript.Tick(PlayerController);
+
                         var l_Target = this.Target;
-
-
                         if (l_Target != null && l_Target.Health > 0 && !l_Target.IsNotAttackable)
                         {
                             if (this.OwnerCombatAssist.Settings.AllowPullTarget || LocalPlayer.IsIncombat)
                             {
-                                if (LocalPlayer.IsIncombat)
-                                    OwnerCombatAssist.Elara.CombatScript.Combat(PlayerController);
-                                else
-                                    OwnerCombatAssist.Elara.CombatScript.Pull(PlayerController);
+                                OwnerCombatAssist.Elara.CombatScript.Combat(PlayerController);
 
                                 return RunStatus.Success;
                             }

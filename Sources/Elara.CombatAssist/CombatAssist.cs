@@ -19,22 +19,19 @@ namespace Elara.CombatAssist
         [Serializable]
         public class CombatAssistSettings
         {
-            public int TickInterval = 100;
             public bool AllowPullTarget = false;
             public bool AutoAcceptLFGInvite = false;
         }
 
         public CombatAssist(Elara p_Elara)
             : base(p_Elara) { }
-
-        private Thread m_PulseThread;
+        
         private SettingsManager m_SettingsManager;
         private UserControlCombatAssist m_Interface;
         
         public CombatAssistSettings Settings { get; private set; } = new CombatAssistSettings();
         public CombatAssistEngine Engine { get; private set; } = null;
         public bool Running { get; private set; } = false;
-        public int LastTick { get; private set; } = 0;
 
         public override string Name => "Combat Assist";
         public override string Category => "Tools";
@@ -48,8 +45,18 @@ namespace Elara.CombatAssist
 
             Elara.Game.OnChangeActivePlayer += Game_OnChangeActivePlayer;
             LoadSettings();
+            Elara.Game.OnUpdate += Game_OnUpdate;
 
             return base.OnLoad();
+        }
+
+        private void Game_OnUpdate(Game p_Game, TimeSpan p_Delta)
+        {
+            if (Running == true &&
+                Engine != null)
+            {
+                Engine.Tick();
+            }
         }
 
         public override bool OnUnload()
@@ -57,6 +64,7 @@ namespace Elara.CombatAssist
             if (Running)
                 Stop();
 
+            Elara.Game.OnUpdate -= Game_OnUpdate;
             Elara.Game.OnChangeActivePlayer -= Game_OnChangeActivePlayer;
             SaveSettings();
 
@@ -90,8 +98,6 @@ namespace Elara.CombatAssist
                 Engine = new CombatAssistEngine(this);
 
                 Running = true;
-                m_PulseThread = new Thread(Thread_Pulsator);
-                m_PulseThread.Start();
                 Elara.Logger.WriteLine("Combat Assist", "Combat assist started !");
             }
         }
@@ -101,16 +107,8 @@ namespace Elara.CombatAssist
             if (Running)
             {
                 Running = false;
-
-                if (m_PulseThread != null)
-                {
-                    m_PulseThread.Join();
-                    m_PulseThread = null;
-                }
-
                 Engine?.Dispose();
                 Engine = null;
-                Running = false;
                 Elara.Logger.WriteLine("Combat Assist", "Combat assist stopped !");
             }
         }
@@ -127,19 +125,6 @@ namespace Elara.CombatAssist
         private void SaveSettings()
         {
             m_SettingsManager.SaveSettingsXml("CombatAssist", this.Settings, true);
-        }
-
-        private void Thread_Pulsator()
-        {
-            while (Running)
-            {
-                if (Environment.TickCount - LastTick > Settings.TickInterval)
-                {
-                    Engine?.Tick();
-                    LastTick = Environment.TickCount;
-                }
-                Thread.Sleep(1);
-            }
         }
     }
 }

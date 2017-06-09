@@ -106,9 +106,9 @@ namespace Elara.BaseCombats
             m_Interface?.UpdateSettings(CurrentSetting);
         }
 
-        public override void Pull(PlayerController p_PlayerController)
+        public override void Tick(PlayerController p_PlayerController)
         {
-            Combat(p_PlayerController);
+            
         }
 
         public override void Combat(PlayerController p_PlayerController)
