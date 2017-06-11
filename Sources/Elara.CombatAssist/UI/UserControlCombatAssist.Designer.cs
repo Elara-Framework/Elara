@@ -34,8 +34,11 @@
             this.metroToggleAllowPullTarget = new MetroFramework.Controls.MetroToggle();
             this.metroLabelAutoAcceptLFGInvite = new MetroFramework.Controls.MetroLabel();
             this.metroToggleAutoAcceptLFGInvite = new MetroFramework.Controls.MetroToggle();
-            this.metroButtonToggleCombatAssist = new MetroFramework.Controls.MetroButton();
             this.timerRefreshUI = new System.Windows.Forms.Timer(this.components);
+            this.metroComboBoxCombatScript = new MetroFramework.Controls.MetroComboBox();
+            this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
+            this.metroToggleEnabled = new MetroFramework.Controls.MetroToggle();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -54,9 +57,9 @@
             // 
             this.metroLabelAllowPullTarget.BackColor = System.Drawing.Color.Transparent;
             this.metroLabelAllowPullTarget.ForeColor = System.Drawing.Color.Black;
-            this.metroLabelAllowPullTarget.Location = new System.Drawing.Point(71, 116);
+            this.metroLabelAllowPullTarget.Location = new System.Drawing.Point(5, 177);
             this.metroLabelAllowPullTarget.Name = "metroLabelAllowPullTarget";
-            this.metroLabelAllowPullTarget.Size = new System.Drawing.Size(447, 20);
+            this.metroLabelAllowPullTarget.Size = new System.Drawing.Size(263, 20);
             this.metroLabelAllowPullTarget.TabIndex = 12;
             this.metroLabelAllowPullTarget.Text = "Allow pulling out of combat target";
             this.metroLabelAllowPullTarget.UseCustomBackColor = true;
@@ -64,24 +67,25 @@
             // 
             // metroToggleAllowPullTarget
             // 
+            this.metroToggleAllowPullTarget.AutoCheck = false;
             this.metroToggleAllowPullTarget.BackColor = System.Drawing.Color.Transparent;
             this.metroToggleAllowPullTarget.DisplayStatus = false;
-            this.metroToggleAllowPullTarget.Location = new System.Drawing.Point(5, 116);
+            this.metroToggleAllowPullTarget.Location = new System.Drawing.Point(274, 177);
             this.metroToggleAllowPullTarget.Name = "metroToggleAllowPullTarget";
             this.metroToggleAllowPullTarget.Size = new System.Drawing.Size(60, 20);
             this.metroToggleAllowPullTarget.TabIndex = 11;
             this.metroToggleAllowPullTarget.Text = "Off";
             this.metroToggleAllowPullTarget.UseCustomBackColor = true;
             this.metroToggleAllowPullTarget.UseSelectable = true;
-            this.metroToggleAllowPullTarget.CheckedChanged += new System.EventHandler(this.metroToggleAttackInCombatOnly_CheckedChanged);
+            this.metroToggleAllowPullTarget.Click += new System.EventHandler(this.metroToggleAllowPullTarget_Click);
             // 
             // metroLabelAutoAcceptLFGInvite
             // 
             this.metroLabelAutoAcceptLFGInvite.BackColor = System.Drawing.Color.Transparent;
             this.metroLabelAutoAcceptLFGInvite.ForeColor = System.Drawing.Color.Black;
-            this.metroLabelAutoAcceptLFGInvite.Location = new System.Drawing.Point(71, 142);
+            this.metroLabelAutoAcceptLFGInvite.Location = new System.Drawing.Point(5, 203);
             this.metroLabelAutoAcceptLFGInvite.Name = "metroLabelAutoAcceptLFGInvite";
-            this.metroLabelAutoAcceptLFGInvite.Size = new System.Drawing.Size(447, 20);
+            this.metroLabelAutoAcceptLFGInvite.Size = new System.Drawing.Size(263, 20);
             this.metroLabelAutoAcceptLFGInvite.TabIndex = 14;
             this.metroLabelAutoAcceptLFGInvite.Text = "Auto accept LFG invite";
             this.metroLabelAutoAcceptLFGInvite.UseCustomBackColor = true;
@@ -89,42 +93,84 @@
             // 
             // metroToggleAutoAcceptLFGInvite
             // 
+            this.metroToggleAutoAcceptLFGInvite.AutoCheck = false;
             this.metroToggleAutoAcceptLFGInvite.BackColor = System.Drawing.Color.Transparent;
             this.metroToggleAutoAcceptLFGInvite.DisplayStatus = false;
-            this.metroToggleAutoAcceptLFGInvite.Location = new System.Drawing.Point(5, 142);
+            this.metroToggleAutoAcceptLFGInvite.Location = new System.Drawing.Point(274, 203);
             this.metroToggleAutoAcceptLFGInvite.Name = "metroToggleAutoAcceptLFGInvite";
             this.metroToggleAutoAcceptLFGInvite.Size = new System.Drawing.Size(60, 20);
             this.metroToggleAutoAcceptLFGInvite.TabIndex = 13;
             this.metroToggleAutoAcceptLFGInvite.Text = "Off";
             this.metroToggleAutoAcceptLFGInvite.UseCustomBackColor = true;
             this.metroToggleAutoAcceptLFGInvite.UseSelectable = true;
-            this.metroToggleAutoAcceptLFGInvite.CheckedChanged += new System.EventHandler(this.metroToggleAutoAcceptLFGInvite_CheckedChanged);
-            // 
-            // metroButtonToggleCombatAssist
-            // 
-            this.metroButtonToggleCombatAssist.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.metroButtonToggleCombatAssist.BackColor = System.Drawing.SystemColors.Control;
-            this.metroButtonToggleCombatAssist.Location = new System.Drawing.Point(3, 317);
-            this.metroButtonToggleCombatAssist.Name = "metroButtonToggleCombatAssist";
-            this.metroButtonToggleCombatAssist.Size = new System.Drawing.Size(694, 30);
-            this.metroButtonToggleCombatAssist.TabIndex = 15;
-            this.metroButtonToggleCombatAssist.Text = "Start combat assist";
-            this.metroButtonToggleCombatAssist.UseCustomForeColor = true;
-            this.metroButtonToggleCombatAssist.UseSelectable = true;
-            this.metroButtonToggleCombatAssist.Click += new System.EventHandler(this.metroButtonToggleCombatAssist_Click);
+            this.metroToggleAutoAcceptLFGInvite.Click += new System.EventHandler(this.metroToggleAutoAcceptLFGInvite_Click);
             // 
             // timerRefreshUI
             // 
             this.timerRefreshUI.Enabled = true;
             this.timerRefreshUI.Tick += new System.EventHandler(this.timerRefreshUI_Tick);
             // 
+            // metroComboBoxCombatScript
+            // 
+            this.metroComboBoxCombatScript.FormattingEnabled = true;
+            this.metroComboBoxCombatScript.ItemHeight = 23;
+            this.metroComboBoxCombatScript.Location = new System.Drawing.Point(274, 116);
+            this.metroComboBoxCombatScript.Name = "metroComboBoxCombatScript";
+            this.metroComboBoxCombatScript.PromptText = "Combat script ...";
+            this.metroComboBoxCombatScript.Size = new System.Drawing.Size(208, 29);
+            this.metroComboBoxCombatScript.Sorted = true;
+            this.metroComboBoxCombatScript.TabIndex = 17;
+            this.metroComboBoxCombatScript.UseSelectable = true;
+            this.metroComboBoxCombatScript.DropDown += new System.EventHandler(this.metroComboBoxCombatScript_DropDown);
+            this.metroComboBoxCombatScript.SelectedValueChanged += new System.EventHandler(this.metroComboBoxCombatScript_SelectedValueChanged);
+            // 
+            // metroLabel1
+            // 
+            this.metroLabel1.BackColor = System.Drawing.Color.Transparent;
+            this.metroLabel1.ForeColor = System.Drawing.Color.Black;
+            this.metroLabel1.Location = new System.Drawing.Point(5, 122);
+            this.metroLabel1.Name = "metroLabel1";
+            this.metroLabel1.Size = new System.Drawing.Size(263, 20);
+            this.metroLabel1.TabIndex = 18;
+            this.metroLabel1.Text = "Combat script";
+            this.metroLabel1.UseCustomBackColor = true;
+            this.metroLabel1.UseCustomForeColor = true;
+            // 
+            // metroLabel2
+            // 
+            this.metroLabel2.BackColor = System.Drawing.Color.Transparent;
+            this.metroLabel2.ForeColor = System.Drawing.Color.Black;
+            this.metroLabel2.Location = new System.Drawing.Point(5, 151);
+            this.metroLabel2.Name = "metroLabel2";
+            this.metroLabel2.Size = new System.Drawing.Size(263, 20);
+            this.metroLabel2.TabIndex = 20;
+            this.metroLabel2.Text = "Enable combat assist";
+            this.metroLabel2.UseCustomBackColor = true;
+            this.metroLabel2.UseCustomForeColor = true;
+            // 
+            // metroToggleEnabled
+            // 
+            this.metroToggleEnabled.AutoCheck = false;
+            this.metroToggleEnabled.BackColor = System.Drawing.Color.Transparent;
+            this.metroToggleEnabled.DisplayStatus = false;
+            this.metroToggleEnabled.Location = new System.Drawing.Point(274, 151);
+            this.metroToggleEnabled.Name = "metroToggleEnabled";
+            this.metroToggleEnabled.Size = new System.Drawing.Size(60, 20);
+            this.metroToggleEnabled.TabIndex = 19;
+            this.metroToggleEnabled.Text = "Off";
+            this.metroToggleEnabled.UseCustomBackColor = true;
+            this.metroToggleEnabled.UseSelectable = true;
+            this.metroToggleEnabled.Click += new System.EventHandler(this.metroToggleEnabled_Click);
+            // 
             // UserControlCombatAssist
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.Controls.Add(this.metroButtonToggleCombatAssist);
+            this.Controls.Add(this.metroLabel2);
+            this.Controls.Add(this.metroToggleEnabled);
+            this.Controls.Add(this.metroLabel1);
+            this.Controls.Add(this.metroComboBoxCombatScript);
             this.Controls.Add(this.metroLabelAutoAcceptLFGInvite);
             this.Controls.Add(this.metroToggleAutoAcceptLFGInvite);
             this.Controls.Add(this.metroLabelAllowPullTarget);
@@ -145,7 +191,10 @@
         private MetroFramework.Controls.MetroToggle metroToggleAllowPullTarget;
         private MetroFramework.Controls.MetroLabel metroLabelAutoAcceptLFGInvite;
         private MetroFramework.Controls.MetroToggle metroToggleAutoAcceptLFGInvite;
-        private MetroFramework.Controls.MetroButton metroButtonToggleCombatAssist;
         private System.Windows.Forms.Timer timerRefreshUI;
+        private MetroFramework.Controls.MetroComboBox metroComboBoxCombatScript;
+        private MetroFramework.Controls.MetroLabel metroLabel1;
+        private MetroFramework.Controls.MetroLabel metroLabel2;
+        private MetroFramework.Controls.MetroToggle metroToggleEnabled;
     }
 }

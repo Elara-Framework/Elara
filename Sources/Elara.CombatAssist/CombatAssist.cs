@@ -14,7 +14,7 @@ using Elara.TreeSharp;
 
 namespace Elara.CombatAssist
 {
-    public class CombatAssist : Extensions.Module
+    public class CombatAssist : Extensions.IExtension
     {
         [Serializable]
         public class CombatAssistSettings
@@ -22,109 +22,51 @@ namespace Elara.CombatAssist
             public bool AllowPullTarget = false;
             public bool AutoAcceptLFGInvite = false;
         }
-
-        public CombatAssist(Elara p_Elara)
-            : base(p_Elara) { }
         
-        private SettingsManager m_SettingsManager;
         private UserControlCombatAssist m_Interface;
-        
+        private Tuple<string, System.Action>[] m_Options = null;
+        public Elara Elara { get; private set; }
         public CombatAssistSettings Settings { get; private set; } = new CombatAssistSettings();
         public CombatAssistEngine Engine { get; private set; } = null;
         public bool Running { get; private set; } = false;
 
-        public override string Name => "Combat Assist";
-        public override string Category => "Tools";
-        public override string Author => "Elara";
-        public override UserControl Interface => m_Interface;
+        public Tuple<string, System.Action>[] Options => m_Options;
 
-        public override bool OnLoad()
+        public bool OnEnable(Elara p_Elara)
         {
-            m_SettingsManager = new SettingsManager(Elara.Game.ObjectManager.LocalPlayer);
+            Elara = p_Elara;
+
             m_Interface = new UserControlCombatAssist(this);
-
-            Elara.Game.OnChangeActivePlayer += Game_OnChangeActivePlayer;
-            LoadSettings();
+            Elara.AddTabPage("Combat Assist", m_Interface);
+            
             Elara.Game.OnUpdate += Game_OnUpdate;
+            Engine = new CombatAssistEngine(this);
 
-            return base.OnLoad();
+            return true;
         }
 
-        private void Game_OnUpdate(Game p_Game, TimeSpan p_Delta)
+        public bool OnDisable(Elara p_Elara)
         {
-            if (Running == true &&
-                Engine != null)
-            {
-                Engine.Tick();
-            }
-        }
-
-        public override bool OnUnload()
-        {
-            if (Running)
-                Stop();
-
+            Engine.Dispose();
             Elara.Game.OnUpdate -= Game_OnUpdate;
-            Elara.Game.OnChangeActivePlayer -= Game_OnChangeActivePlayer;
-            SaveSettings();
 
             if (m_Interface != null)
             {
+                Elara.RemoveTabPage(m_Interface);
+
                 m_Interface.Dispose();
                 m_Interface = null;
             }
 
-            return base.OnUnload();
+            return true;
         }
 
-        private void Game_OnChangeActivePlayer(Game p_Game, WowLocalPlayer p_LocalPlayer)
+        private void Game_OnUpdate(Game p_Game, TimeSpan p_Delta)
         {
-            SaveSettings();
-            m_SettingsManager = new SettingsManager(p_LocalPlayer);
-            LoadSettings();
-        }
-
-        public void Start()
-        {
-            if (!Running)
+            if (Engine != null && Elara.Settings.GetCharacterValue<bool>("ELARA_COMBAT_ASSIST", "ENABLED") == true)
             {
-                if (Elara.CombatScript == null)
-                {
-                    MetroFramework.MetroMessageBox.Show(m_Interface, "Please select a combat script before starting Combat Assist !",
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                Engine = new CombatAssistEngine(this);
-
-                Running = true;
-                Elara.Logger.WriteLine("Combat Assist", "Combat assist started !");
+                Engine.Pulse();
             }
-        }
-
-        public void Stop()
-        {
-            if (Running)
-            {
-                Running = false;
-                Engine?.Dispose();
-                Engine = null;
-                Elara.Logger.WriteLine("Combat Assist", "Combat assist stopped !");
-            }
-        }
-
-        private void LoadSettings()
-        {
-            var l_Settings = new CombatAssistSettings();
-            m_SettingsManager.LoadSettingsXml("CombatAssist", ref l_Settings, true);
-
-            this.Settings = l_Settings;
-            m_Interface?.OnChangeSettings(this.Settings);
-        }
-
-        private void SaveSettings()
-        {
-            m_SettingsManager.SaveSettingsXml("CombatAssist", this.Settings, true);
         }
     }
 }

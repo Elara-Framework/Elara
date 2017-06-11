@@ -14,40 +14,44 @@ using Elara.TreeSharp;
 
 namespace Elara.Fisher
 {
-    public class Fisher : Extensions.Module
+    public class Fisher : Extensions.IExtension
     {
-        public Fisher(Elara p_Elara)
-            : base(p_Elara) { }
-
         private Thread m_PulseThread;
         private UserControlFisher m_Interface;
-        
+        private Tuple<string, System.Action>[] m_Options = null;
+
+        public Elara Elara { get; private set; }
         public FisherEngine Engine { get; private set; } = null;
         public bool Running { get; private set; } = false;
         public int TickInterval { get; private set; } = 200;
         public int LastTick { get; private set; } = 0;
 
-        public override string Name => "Fisher";
-        public override string Category => "Bots";
-        public override string Author => "Elara";
-        public override UserControl Interface => m_Interface;
+        public Tuple<string, System.Action>[] Options => m_Options;
 
-        public override bool OnLoad()
+        public bool OnEnable(Elara p_Elara)
         {
+            Elara = p_Elara;
             m_Interface = new UserControlFisher(this);
+            
+            Elara.AddTabPage("Fisher", m_Interface);
 
-            return base.OnLoad();
+            return true;
         }
 
-        public override bool OnUnload()
+        public bool OnDisable(Elara p_Elara)
         {
             if (Running)
                 Stop();
 
-            m_Interface?.Dispose();
-            m_Interface = null;
+            if (m_Interface != null)
+            {
+                Elara.RemoveTabPage(m_Interface);
 
-            return base.OnUnload();
+                m_Interface.Dispose();
+                m_Interface = null;
+            }
+
+            return true;
         }
 
         public void Start()
@@ -84,10 +88,8 @@ namespace Elara.Fisher
 
         private void Thread_Pulsator()
         {
-            if (Engine != null && !Engine.GameOwner.BackgroundMode)
-            {
+            if (Engine != null && !Engine.GameOwner.BackgroundModeEnabled)
                 Engine.GameOwner.BringWindowForeground();
-            }
 
             while (Running)
             {

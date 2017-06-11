@@ -27,6 +27,7 @@ namespace Elara.CombatAssist
 
         public WowLocalPlayer LocalPlayer { get; private set; } = null;
         public WowUnit Target { get; private set; } = null;
+        public Extensions.CombatScript CombatScript { get; private set; } = null;
 
         public CombatAssistEngine(CombatAssist p_CombatAssist)
         {
@@ -62,17 +63,17 @@ namespace Elara.CombatAssist
                                      GameOwner.GetFrameByName("LFGDungeonReadyDialogEnterDungeonButton")?.IsVisible == true,
                     new Action(AcceptLFGInviteAction)
                 ),
-                new Decorator(ret => OwnerCombatAssist.Elara.CombatScript != null,
+                new Decorator(ret => this.CombatScript != null,
                     new Action(delegate(object context)
                     {
-                        OwnerCombatAssist.Elara.CombatScript.Tick(PlayerController);
+                        this.CombatScript.Pulse(PlayerController);
 
                         var l_Target = this.Target;
                         if (l_Target != null && l_Target.Health > 0 && !l_Target.IsNotAttackable)
                         {
                             if (this.OwnerCombatAssist.Settings.AllowPullTarget || LocalPlayer.IsIncombat)
                             {
-                                OwnerCombatAssist.Elara.CombatScript.Combat(PlayerController);
+                                this.CombatScript.Combat(PlayerController);
 
                                 return RunStatus.Success;
                             }
@@ -111,12 +112,15 @@ namespace Elara.CombatAssist
             }
         }
 
-        public void Tick()
+        public void Pulse()
         {
             this.LocalPlayer = this.GameOwner.ObjectManager.LocalPlayer;
             this.Target = this.GameOwner.ObjectManager.LocalPlayer?.Target;
             if (this.LocalPlayer == null)
                 return;
+
+            string l_CombatScriptName = this.OwnerCombatAssist.Elara.Settings.GetCharacterValue<string>("ELARA_COMBAT_ASSIST", "COMBAT_SCRIPT_NAME", null);
+            this.CombatScript = OwnerCombatAssist.Elara.CombatScripts.FirstOrDefault(x => x.Name == l_CombatScriptName);
 
             try
             {

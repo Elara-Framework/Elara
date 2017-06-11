@@ -16,12 +16,6 @@ namespace Elara.BaseCombats
 {
     public class Mage : Extensions.CombatScript
     {
-        [Serializable]
-        public class MageSettings
-        {
-            public bool UseFrozenOrb = true;
-            public bool UseBlizzard = false;
-        }
 
         private WoW.Helpers.SpellInfo RuneOfPower;
         private WoW.Helpers.SpellInfo RayOfFrost;
@@ -39,73 +33,25 @@ namespace Elara.BaseCombats
         private const int AURA_RUNE_OF_POWER            = 116014;
         private const int AURA_ICICLES                  = 205473;
 
-        private UI.UserControlMage m_Interface;
-        private SettingsManager m_SettingsManager;
-        public MageSettings CurrentSetting { get; private set; } = new MageSettings();
-
         public Mage(Elara p_Elara)
             : base(p_Elara)
         {
+            RuneOfPower = new WoW.Helpers.SpellInfo(Game, 116011);
+            RayOfFrost = new WoW.Helpers.SpellInfo(Game, 205021);
+            IceLance = new WoW.Helpers.SpellInfo(Game, 30455);
+            Flurry = new WoW.Helpers.SpellInfo(Game, 44614);
+            FrozenOrb = new WoW.Helpers.SpellInfo(Game, 84714);
+            FrostBolt = new WoW.Helpers.SpellInfo(Game, 116);
+            FrostBomb = new WoW.Helpers.SpellInfo(Game, 112948);
+            GlacialSpike = new WoW.Helpers.SpellInfo(Game, 199786);
+            Blizzard = new WoW.Helpers.SpellInfo(Game, 190356);
         }
         
         public override string Name => "Mage";
 
-        public override string Author => "Elara";
-
         public override float CombatRange => 28.0f;
 
-        public override UserControl Interface => m_Interface;
-
-        public override void OnLoad()
-        {
-            m_SettingsManager   = new SettingsManager(Game.ObjectManager.LocalPlayer);
-            m_Interface         = new UI.UserControlMage(this);
-
-            RuneOfPower         = new WoW.Helpers.SpellInfo(Game, 116011);
-            RayOfFrost          = new WoW.Helpers.SpellInfo(Game, 205021);
-            IceLance            = new WoW.Helpers.SpellInfo(Game, 30455);
-            Flurry              = new WoW.Helpers.SpellInfo(Game, 44614);
-            FrozenOrb           = new WoW.Helpers.SpellInfo(Game, 84714);
-            FrostBolt           = new WoW.Helpers.SpellInfo(Game, 116);
-            FrostBomb           = new WoW.Helpers.SpellInfo(Game, 112948);
-            GlacialSpike        = new WoW.Helpers.SpellInfo(Game, 199786);
-            Blizzard            = new WoW.Helpers.SpellInfo(Game, 190356);
-
-            Elara.Game.OnChangeActivePlayer += Game_OnChangeActivePlayer;
-            LoadSettings();
-        }
-
-        private void Game_OnChangeActivePlayer(Game p_Game, WowLocalPlayer p_LocalPlayer)
-        {
-            SaveSettings();
-            m_SettingsManager = new SettingsManager(p_LocalPlayer);
-            LoadSettings();
-        }
-
-        public override void OnUnload()
-        {
-            Elara.Game.OnChangeActivePlayer -= Game_OnChangeActivePlayer;
-            SaveSettings();
-
-            m_Interface?.Dispose();
-            m_Interface = null;
-        }
-
-        private void SaveSettings()
-        {
-            m_SettingsManager.SaveSettingsXml<MageSettings>("Mage", CurrentSetting, true);
-        }
-
-        private void LoadSettings()
-        {
-            var l_Settings = new MageSettings();
-            m_SettingsManager.LoadSettingsXml<MageSettings>("Mage", ref l_Settings, true);
-
-            CurrentSetting = l_Settings;
-            m_Interface?.UpdateSettings(CurrentSetting);
-        }
-
-        public override void Tick(PlayerController p_PlayerController)
+        public override void Pulse(PlayerController p_PlayerController)
         {
 
         }
@@ -150,8 +96,7 @@ namespace Elara.BaseCombats
                     return;
                 }
                 
-                if (CurrentSetting.UseFrozenOrb &&                                      // Check user setting
-                    l_LocalPlayer.IsMoving == false &&                                  // Not moving
+                if (l_LocalPlayer.IsMoving == false &&                                  // Not moving
                     l_LocalPlayer.IsFacingHeading(l_Target, 0.3f) &&                    // Check target facing
                     l_LocalPlayer.CastingInfo == null &&                                // Not casting
                     l_SpellController.CanUseSpell(FrozenOrb, l_Target))                 // Use SpellController generic conditions
@@ -160,7 +105,7 @@ namespace Elara.BaseCombats
                     return;
                 }
 
-                if (CurrentSetting.UseBlizzard &&                                       // Check user setting
+                if (//CurrentSetting.UseBlizzard &&                                       // Check user setting
                     l_LocalPlayer.IsMoving == false &&                                  // Not moving
                     l_HostilesAroundTarget.Count >= 2 &&                                // Check adds around target
                     l_TargetVisibleOnScreen &&                                          // Check that target is visible to click on

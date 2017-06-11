@@ -1,0 +1,8 @@
+{
+  "identifier": "ELARA_BASE_COMBAT",
+  "name": "Default Combat Scripts",
+  "author": "Elara",
+  "description": "Elara default combat scripts",
+  "version": "1.0",
+  "assemblies": [ "Elara.BaseCombats.dll" ]
+}

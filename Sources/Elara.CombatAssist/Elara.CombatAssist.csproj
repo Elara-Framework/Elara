@@ -104,6 +104,9 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="metadata.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\Sword Filled-100.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

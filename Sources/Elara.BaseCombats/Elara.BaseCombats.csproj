@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CombatUtils.cs" />
+    <Compile Include="Extension.cs" />
     <Compile Include="Mage.cs" />
     <Compile Include="Paladin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -84,18 +85,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="UI\UserControlMage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\UserControlMage.Designer.cs">
-      <DependentUpon>UserControlMage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\UserControlPaladin.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\UserControlPaladin.Designer.cs">
-      <DependentUpon>UserControlPaladin.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -103,18 +92,12 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\UserControlMage.resx">
-      <DependentUpon>UserControlMage.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\UserControlPaladin.resx">
-      <DependentUpon>UserControlPaladin.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Sword Filled-100.png" />
+    <None Include="metadata.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

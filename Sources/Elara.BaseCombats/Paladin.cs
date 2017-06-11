@@ -16,12 +16,6 @@ namespace Elara.BaseCombats
 {
     public class Paladin : Extensions.CombatScript
     {
-        [Serializable]
-        public class PaladinSettings
-        {
-            
-        }
-
         private WoW.Helpers.SpellInfo Judgment;
         private WoW.Helpers.SpellInfo DivineStorm;
         private WoW.Helpers.SpellInfo TemplarsVerdict;
@@ -36,77 +30,29 @@ namespace Elara.BaseCombats
         private WoW.Helpers.SpellInfo LayOnHands;
         private WoW.Helpers.SpellInfo FlashOfLight;
 
-        private UI.UserControlPaladin m_Interface;
-        private SettingsManager m_SettingsManager;
-        public PaladinSettings CurrentSetting { get; private set; } = new PaladinSettings();
-
         public Paladin(Elara p_Elara)
             : base(p_Elara)
         {
+            Judgment = new WoW.Helpers.SpellInfo(Game, 20271);
+            DivineStorm = new WoW.Helpers.SpellInfo(Game, 53385);
+            TemplarsVerdict = new WoW.Helpers.SpellInfo(Game, 85256);
+            BladeOfJustice = new WoW.Helpers.SpellInfo(Game, 184575);
+            CrusaderStrike = new WoW.Helpers.SpellInfo(Game, 35395);
+            Consecration = new WoW.Helpers.SpellInfo(Game, 26573);
+            AvengersShield = new WoW.Helpers.SpellInfo(Game, 31935);
+            ShieldOfTheRighteous = new WoW.Helpers.SpellInfo(Game, 53600);
+            LightOfTheProtector = new WoW.Helpers.SpellInfo(Game, 184092);
+            HandOfTheProtector = new WoW.Helpers.SpellInfo(Game, 213652);
+            BlessedHammers = new WoW.Helpers.SpellInfo(Game, 204019);
+            LayOnHands = new WoW.Helpers.SpellInfo(Game, 633);
+            FlashOfLight = new WoW.Helpers.SpellInfo(Game, 19750);
         }
 
         public override string Name => "Paladin";
 
-        public override string Author => "Elara";
-
         public override float CombatRange => 3.0f;
 
-        public override UserControl Interface => m_Interface;
-
-        public override void OnLoad()
-        {
-            m_SettingsManager       = new SettingsManager(Game.ObjectManager.LocalPlayer);
-            m_Interface             = new UI.UserControlPaladin(this);
-
-            Judgment                = new WoW.Helpers.SpellInfo(Game, 20271);
-            DivineStorm             = new WoW.Helpers.SpellInfo(Game, 53385);
-            TemplarsVerdict         = new WoW.Helpers.SpellInfo(Game, 85256);
-            BladeOfJustice          = new WoW.Helpers.SpellInfo(Game, 184575);
-            CrusaderStrike          = new WoW.Helpers.SpellInfo(Game, 35395);
-            Consecration            = new WoW.Helpers.SpellInfo(Game, 26573);
-            AvengersShield          = new WoW.Helpers.SpellInfo(Game, 31935);
-            ShieldOfTheRighteous    = new WoW.Helpers.SpellInfo(Game, 53600);
-            LightOfTheProtector     = new WoW.Helpers.SpellInfo(Game, 184092);
-            HandOfTheProtector      = new WoW.Helpers.SpellInfo(Game, 213652);
-            BlessedHammers          = new WoW.Helpers.SpellInfo(Game, 204019);
-            LayOnHands              = new WoW.Helpers.SpellInfo(Game, 633);
-            FlashOfLight            = new WoW.Helpers.SpellInfo(Game, 19750);
-
-            Elara.Game.OnChangeActivePlayer += Game_OnChangeActivePlayer;
-            LoadSettings();
-        }
-
-        public override void OnUnload()
-        {
-            Elara.Game.OnChangeActivePlayer -= Game_OnChangeActivePlayer;
-            SaveSettings();
-
-            m_Interface?.Dispose();
-            m_Interface = null;
-        }
-
-        private void Game_OnChangeActivePlayer(Game p_Game, WowLocalPlayer p_LocalPlayer)
-        {
-            SaveSettings();
-            m_SettingsManager = new SettingsManager(p_LocalPlayer);
-            LoadSettings();
-        }
-
-        private void SaveSettings()
-        {
-            m_SettingsManager.SaveSettingsXml<PaladinSettings>("Paladin", CurrentSetting, true);
-        }
-
-        private void LoadSettings()
-        {
-            var l_Settings = new PaladinSettings();
-            m_SettingsManager.LoadSettingsXml<PaladinSettings>("Paladin", ref l_Settings, true);
-
-            CurrentSetting = l_Settings;
-            m_Interface?.UpdateSettings(CurrentSetting);
-        }
-
-        public override void Tick(PlayerController p_PlayerController)
+        public override void Pulse(PlayerController p_PlayerController)
         {
             
         }
