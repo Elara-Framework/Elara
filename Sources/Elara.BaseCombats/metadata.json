@@ -4,5 +4,5 @@
   "author": "Elara",
   "description": "Elara default combat scripts",
   "version": "1.0",
-  "assemblies": [ "Elara.BaseCombats.dll" ]
+  "binary": "Elara.BaseCombats.dll"
 }

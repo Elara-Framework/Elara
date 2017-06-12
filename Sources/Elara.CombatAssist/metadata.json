@@ -4,5 +4,5 @@
   "author": "Elara",
   "description": "Simple combat assist",
   "version": "1.0",
-  "assemblies": [ "Elara.CombatAssist.dll" ]
+  "binary": "Elara.CombatAssist.dll"
 }

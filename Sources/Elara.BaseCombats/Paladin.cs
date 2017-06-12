@@ -142,8 +142,7 @@ namespace Elara.BaseCombats
                     return;
                 }
 
-                if (l_HostilesAroundPlayer.Count >= 2 &&
-                    l_SpellController.CanUseSpell(BlessedHammers))
+                if (l_SpellController.CanUseSpell(BlessedHammers))
                 {
                     l_SpellController.UseSpell(BlessedHammers);
                     return;
