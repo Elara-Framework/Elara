@@ -28,13 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.metroLabelAllowPullTarget = new MetroFramework.Controls.MetroLabel();
             this.metroToggleAllowPullTarget = new MetroFramework.Controls.MetroToggle();
             this.metroLabelAutoAcceptLFGInvite = new MetroFramework.Controls.MetroLabel();
             this.metroToggleAutoAcceptLFGInvite = new MetroFramework.Controls.MetroToggle();
-            this.timerRefreshUI = new System.Windows.Forms.Timer(this.components);
             this.metroComboBoxCombatScript = new MetroFramework.Controls.MetroComboBox();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
@@ -67,7 +65,6 @@
             // 
             // metroToggleAllowPullTarget
             // 
-            this.metroToggleAllowPullTarget.AutoCheck = false;
             this.metroToggleAllowPullTarget.BackColor = System.Drawing.Color.Transparent;
             this.metroToggleAllowPullTarget.DisplayStatus = false;
             this.metroToggleAllowPullTarget.Location = new System.Drawing.Point(274, 177);
@@ -93,7 +90,6 @@
             // 
             // metroToggleAutoAcceptLFGInvite
             // 
-            this.metroToggleAutoAcceptLFGInvite.AutoCheck = false;
             this.metroToggleAutoAcceptLFGInvite.BackColor = System.Drawing.Color.Transparent;
             this.metroToggleAutoAcceptLFGInvite.DisplayStatus = false;
             this.metroToggleAutoAcceptLFGInvite.Location = new System.Drawing.Point(274, 203);
@@ -104,11 +100,6 @@
             this.metroToggleAutoAcceptLFGInvite.UseCustomBackColor = true;
             this.metroToggleAutoAcceptLFGInvite.UseSelectable = true;
             this.metroToggleAutoAcceptLFGInvite.Click += new System.EventHandler(this.metroToggleAutoAcceptLFGInvite_Click);
-            // 
-            // timerRefreshUI
-            // 
-            this.timerRefreshUI.Enabled = true;
-            this.timerRefreshUI.Tick += new System.EventHandler(this.timerRefreshUI_Tick);
             // 
             // metroComboBoxCombatScript
             // 
@@ -150,7 +141,6 @@
             // 
             // metroToggleEnabled
             // 
-            this.metroToggleEnabled.AutoCheck = false;
             this.metroToggleEnabled.BackColor = System.Drawing.Color.Transparent;
             this.metroToggleEnabled.DisplayStatus = false;
             this.metroToggleEnabled.Location = new System.Drawing.Point(274, 151);
@@ -191,7 +181,6 @@
         private MetroFramework.Controls.MetroToggle metroToggleAllowPullTarget;
         private MetroFramework.Controls.MetroLabel metroLabelAutoAcceptLFGInvite;
         private MetroFramework.Controls.MetroToggle metroToggleAutoAcceptLFGInvite;
-        private System.Windows.Forms.Timer timerRefreshUI;
         private MetroFramework.Controls.MetroComboBox metroComboBoxCombatScript;
         private MetroFramework.Controls.MetroLabel metroLabel1;
         private MetroFramework.Controls.MetroLabel metroLabel2;

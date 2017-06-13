@@ -4,5 +4,12 @@
   "author": "Elara",
   "description": "Elara default combat scripts",
   "version": "1.0",
-  "binary": "Elara.BaseCombats.dll"
+  "binary": "Elara.BaseCombats.dll",
+  "roslyn": {
+      "sources": [
+        "CombatUtils.cs", 
+        "Extension.cs", 
+        "Mage.cs", 
+        "Paladin.cs"]
+  }
 }

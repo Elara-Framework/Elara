@@ -116,11 +116,11 @@ namespace Elara.CombatAssist
         {
             this.LocalPlayer = this.GameOwner.ObjectManager.LocalPlayer;
             this.Target = this.GameOwner.ObjectManager.LocalPlayer?.Target;
+
             if (this.LocalPlayer == null)
                 return;
-
-            string l_CombatScriptName = this.OwnerCombatAssist.Elara.Settings.GetCharacterValue<string>("ELARA_COMBAT_ASSIST", "COMBAT_SCRIPT_NAME", null);
-            this.CombatScript = OwnerCombatAssist.Elara.CombatScripts.FirstOrDefault(x => x.Name == l_CombatScriptName);
+            
+            this.CombatScript = OwnerCombatAssist.Elara.CombatScripts.FirstOrDefault(x => x.Name == OwnerCombatAssist.Settings.CombatScript);
 
             try
             {

@@ -28,7 +28,7 @@ namespace Elara.Fisher
 
         public Tuple<string, System.Action>[] Options => m_Options;
 
-        public bool OnEnable(Elara p_Elara)
+        public override bool OnEnable(Elara p_Elara)
         {
             Elara = p_Elara;
             m_Interface = new UserControlFisher(this);
@@ -38,7 +38,7 @@ namespace Elara.Fisher
             return true;
         }
 
-        public bool OnDisable(Elara p_Elara)
+        public override bool OnDisable(Elara p_Elara)
         {
             if (Running)
                 Stop();

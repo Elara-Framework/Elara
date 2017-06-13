@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Elara.WoW;
 using Elara.WoW.Objects;
 using Elara.TreeSharp;
+using System.IO;
 
 namespace Elara.CombatAssist
 {
@@ -19,36 +20,38 @@ namespace Elara.CombatAssist
         [Serializable]
         public class CombatAssistSettings
         {
+            public string CombatScript = string.Empty;
+            public bool Enabled = false;
             public bool AllowPullTarget = false;
             public bool AutoAcceptLFGInvite = false;
         }
         
         private UserControlCombatAssist m_Interface;
-        private Tuple<string, System.Action>[] m_Options = null;
         public Elara Elara { get; private set; }
         public CombatAssistSettings Settings { get; private set; } = new CombatAssistSettings();
         public CombatAssistEngine Engine { get; private set; } = null;
         public bool Running { get; private set; } = false;
 
-        public Tuple<string, System.Action>[] Options => m_Options;
-
-        public bool OnEnable(Elara p_Elara)
+        public override bool OnEnable(Elara p_Elara)
         {
             Elara = p_Elara;
-
+            Settings = Utils.Serialization.DeserializeFromJson<CombatAssistSettings>(Path.Combine(this.MetaData.Directory.FullName, "Settings.json")) ?? new CombatAssistSettings();
+            Engine = new CombatAssistEngine(this);
             m_Interface = new UserControlCombatAssist(this);
+
             Elara.AddTabPage("Combat Assist", m_Interface);
             
             Elara.Game.OnUpdate += Game_OnUpdate;
-            Engine = new CombatAssistEngine(this);
-
             return true;
         }
 
-        public bool OnDisable(Elara p_Elara)
+        public override bool OnDisable(Elara p_Elara)
         {
-            Engine.Dispose();
             Elara.Game.OnUpdate -= Game_OnUpdate;
+
+            Utils.Serialization.SerializeToJson(Path.Combine(this.MetaData.Directory.FullName, "Settings.json"), this.Settings);
+
+            Engine.Dispose();
 
             if (m_Interface != null)
             {
@@ -63,7 +66,7 @@ namespace Elara.CombatAssist
 
         private void Game_OnUpdate(Game p_Game, TimeSpan p_Delta)
         {
-            if (Engine != null && Elara.Settings.GetCharacterValue<bool>("ELARA_COMBAT_ASSIST", "ENABLED") == true)
+            if (Engine != null && Settings.Enabled)
             {
                 Engine.Pulse();
             }
