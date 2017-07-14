@@ -1,8 +1,0 @@
-{
-  "identifier": "ELARA_COMBAT_ASSIST",
-  "name": "Combat Assist",
-  "author": "Elara",
-  "description": "Simple combat assist",
-  "version": "1.0",
-  "binary": "Elara.CombatAssist.dll"
-}

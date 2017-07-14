@@ -1,8 +1,0 @@
-{
-  "identifier": "ELARA_FISHER",
-  "name": "Fisher",
-  "author": "Elara",
-  "description": "Simple fishing bot",
-  "version": "1.0",
-  "binary": "Elara.Fisher.dll"
-}
